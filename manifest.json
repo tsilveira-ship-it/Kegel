@@ -1,7 +1,7 @@
 {
-  "name": "Routine Kegel Homme — Programme Complet",
-  "short_name": "Kegel",
-  "description": "Renforcez votre plancher pelvien en 8 semaines. Programme progressif complet avec minuteurs intégrés.",
+  "name": "KEGOD — Deviens une machine",
+  "short_name": "KEGOD",
+  "description": "Programme Kegel homme : renforcez votre plancher pelvien en 8 semaines. Minuteurs guidés, animations et audio.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0e1a",
