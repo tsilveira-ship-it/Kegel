@@ -1,10 +1,13 @@
-const CACHE_NAME = 'kegel-v3';
+const CACHE_NAME = 'kegel-v4';
 const ASSETS = [
   '/',
   '/index.html',
+  '/privacy.html',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
+  '/icons/icon-192-maskable.png',
+  '/icons/icon-512-maskable.png',
   'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,800;1,9..144,400&display=swap'
 ];
 
