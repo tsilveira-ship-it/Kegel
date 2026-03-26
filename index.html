@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>KEGOD — Deviens une machine</title>
+<title>KEGOD — Become a machine</title>
 
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="KEGOD">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<meta name="description" content="KEGOD — Programme Kegel homme : renforcez votre plancher pelvien en 8 semaines. Minuteurs guides, animations et audio.">
+<meta name="description" content="KEGOD — Men's Kegel program: strengthen your pelvic floor in 8 weeks. Guided timers, animations and audio.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -79,6 +79,17 @@
     padding: 6px; font-size: 0.8rem; font-weight: 600;
   }
   .offline-bar.show { display: block; }
+
+  /* ═══ LANGUAGE SWITCHER ═══ */
+  .lang-switcher { position: fixed; top: 12px; right: 12px; z-index: 1000; }
+  .lang-btn { display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 100px; color: var(--text-dim); font-size: 0.8rem; font-weight: 600; cursor: pointer; backdrop-filter: blur(10px); font-family: 'Outfit', sans-serif; }
+  .lang-btn:hover { color: var(--text); border-color: var(--accent); }
+  .lang-btn svg { width: 16px; height: 16px; }
+  .lang-menu { display: none; position: absolute; top: 100%; right: 0; margin-top: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; min-width: 140px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .lang-menu.open { display: block; }
+  .lang-menu button { display: block; width: 100%; padding: 10px 16px; background: none; border: none; color: var(--text-dim); font-size: 0.85rem; text-align: left; cursor: pointer; font-family: inherit; }
+  .lang-menu button:hover { background: var(--surface-2); color: var(--text); }
+  .lang-menu button.active { color: var(--accent); font-weight: 600; }
 
   /* ═══ APP SHELL: Views + Tab Bar ═══ */
   .view { display: none; animation: viewFadeIn 0.25s ease; }
@@ -443,14 +454,28 @@
 </head>
 <body>
 
+<!-- Language switcher -->
+<div class="lang-switcher" id="langSwitcher">
+  <button class="lang-btn" onclick="toggleLangMenu()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+    <span id="langLabel">EN</span>
+  </button>
+  <div class="lang-menu" id="langMenu">
+    <button onclick="setLang('en')">English</button>
+    <button onclick="setLang('fr')">Fran&ccedil;ais</button>
+    <button onclick="setLang('pt')">Portugu&ecirc;s</button>
+    <button onclick="setLang('es')">Espa&ntilde;ol</button>
+  </div>
+</div>
+
 <!-- Offline indicator -->
-<div class="offline-bar" id="offlineBar">Mode hors-ligne</div>
+<div class="offline-bar" id="offlineBar" data-i18n="offline">Offline mode</div>
 
 <!-- PWA install banner -->
 <div class="pwa-install-banner" id="installBanner">
-  <p>Installer l'app pour un acces rapide</p>
-  <button class="btn-install" id="installBtn">Installer</button>
-  <button class="btn-dismiss" id="dismissBtn">Plus tard</button>
+  <p data-i18n="installBanner">Install the app for quick access</p>
+  <button class="btn-install" id="installBtn" data-i18n="installBtn">Install</button>
+  <button class="btn-dismiss" id="dismissBtn" data-i18n="installDismiss">Later</button>
 </div>
 
 <!-- ═══════════════════════════════════════ -->
@@ -458,25 +483,25 @@
 <!-- ═══════════════════════════════════════ -->
 <div id="view-accueil" class="view active">
   <div class="accueil-header">
-    <div class="hero-badge"><span class="dot"></span>Programme Homme</div>
+    <div class="hero-badge"><span class="dot"></span><span data-i18n="badge">MEN'S PROGRAM</span></div>
     <h1><span class="highlight">KEGOD</span></h1>
-    <p class="subtitle">Deviens une machine. Programme Kegel en 8 semaines avec minuteurs guides.</p>
+    <p class="subtitle" data-i18n="subtitle">Become a machine. 8-week Kegel program with guided timers.</p>
     <div class="hero-stats">
-      <div class="hero-stat"><div class="num">8</div><div class="label">Semaines</div></div>
-      <div class="hero-stat"><div class="num">3x</div><div class="label">Par jour</div></div>
-      <div class="hero-stat"><div class="num">5'</div><div class="label">Par seance</div></div>
+      <div class="hero-stat"><div class="num">8</div><div class="label" data-i18n="statWeeks">Weeks</div></div>
+      <div class="hero-stat"><div class="num">3x</div><div class="label" data-i18n="statPerDay">Per day</div></div>
+      <div class="hero-stat"><div class="num">5'</div><div class="label" data-i18n="statPerSession">Per session</div></div>
     </div>
   </div>
   <div class="container">
-    <div class="section-label"><span class="line"></span>Benefices</div>
+    <div class="section-label"><span class="line"></span><span data-i18n="benefits">Benefits</span></div>
     <div class="anatomy-grid">
-      <div class="anatomy-card"><div class="icon-wrap" style="background:#00d4aa18;color:var(--accent);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18.5l-3-2.5V12l3-4 3 1 2-3h2l2 3 3-1 3 4v4l-3 2.5"/><path d="M12 13v4"/></svg></div><h3>Controle urinaire</h3><p>Reduisez les fuites urinaires et renforcez le sphincter pour un meilleur controle de la vessie.</p></div>
-      <div class="anatomy-card"><div class="icon-wrap" style="background:#7c5cfc18;color:var(--accent-2);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><h3>Performance sexuelle</h3><p>Ameliorez la qualite des erections, le controle de l'ejaculation et l'intensite des sensations.</p></div>
-      <div class="anatomy-card"><div class="icon-wrap" style="background:#fbbf2418;color:var(--warm);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3>Prevention prostate</h3><p>Maintenez une bonne circulation pelvienne et soutenez la recuperation post-chirurgie prostatique.</p></div>
-      <div class="anatomy-card"><div class="icon-wrap" style="background:#ff6b6b18;color:var(--accent-3);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5h11M4 10V6.5a2.5 2.5 0 015 0V10m6-3.5V10m0-3.5a2.5 2.5 0 015 0V10M4 14v3.5a2.5 2.5 0 005 0V14m6 3.5V14m0 3.5a2.5 2.5 0 005 0V14M6.5 17.5h11M2 10h20v4H2z"/></svg></div><h3>Stabilite du core</h3><p>Completez votre gainage profond — le plancher pelvien est le « fond » du caisson abdominal.</p></div>
+      <div class="anatomy-card"><div class="icon-wrap" style="background:#00d4aa18;color:var(--accent);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18.5l-3-2.5V12l3-4 3 1 2-3h2l2 3 3-1 3 4v4l-3 2.5"/><path d="M12 13v4"/></svg></div><h3 data-i18n="benefit1Title">Urinary control</h3><p data-i18n="benefit1Desc">Reduce leaks and strengthen the sphincter for better bladder control.</p></div>
+      <div class="anatomy-card"><div class="icon-wrap" style="background:#7c5cfc18;color:var(--accent-2);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><h3 data-i18n="benefit2Title">Sexual performance</h3><p data-i18n="benefit2Desc">Improve erection quality, ejaculation control and sensation intensity.</p></div>
+      <div class="anatomy-card"><div class="icon-wrap" style="background:#fbbf2418;color:var(--warm);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3 data-i18n="benefit3Title">Prostate prevention</h3><p data-i18n="benefit3Desc">Maintain good pelvic circulation and support post-surgery recovery.</p></div>
+      <div class="anatomy-card"><div class="icon-wrap" style="background:#ff6b6b18;color:var(--accent-3);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5h11M4 10V6.5a2.5 2.5 0 015 0V10m6-3.5V10m0-3.5a2.5 2.5 0 015 0V10M4 14v3.5a2.5 2.5 0 005 0V14m6 3.5V14m0 3.5a2.5 2.5 0 005 0V14M6.5 17.5h11M2 10h20v4H2z"/></svg></div><h3 data-i18n="benefit4Title">Core stability</h3><p data-i18n="benefit4Desc">Complete your deep core — the pelvic floor is the base of the abdominal unit.</p></div>
     </div>
     <div class="cta-section">
-      <button class="btn-cta" onclick="switchTab('training')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18.5l-3-2.5V12l3-4 3 1 2-3h2l2 3 3-1 3 4v4l-3 2.5"/><path d="M12 13v4"/></svg> Commencer l'entrainement</button>
+      <button class="btn-cta" onclick="switchTab('training')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18.5l-3-2.5V12l3-4 3 1 2-3h2l2 3 3-1 3 4v4l-3 2.5"/><path d="M12 13v4"/></svg> <span data-i18n="cta">Start training</span></button>
     </div>
   </div>
 </div>
@@ -486,39 +511,39 @@
 <!-- ═══════════════════════════════════════ -->
 <div id="view-training" class="view">
   <div class="training-header">
-    <h2>Entrainement</h2>
-    <p>Choisissez votre programme</p>
+    <h2 data-i18n="trainingHeader">Training</h2>
+    <p data-i18n="chooseProgramme">Choose your programme</p>
   </div>
   <div class="sub-tabs" id="subTabs">
-    <button class="sub-tab active" data-prog="s12" style="--tab-color:var(--accent);" onclick="switchProgramme('s12')">S1-2 Fondation</button>
-    <button class="sub-tab" data-prog="s34" style="--tab-color:var(--accent-2);" onclick="switchProgramme('s34')">S3-4 Progression</button>
-    <button class="sub-tab" data-prog="s56" style="--tab-color:var(--warm);" onclick="switchProgramme('s56')">S5-6 Intensif</button>
-    <button class="sub-tab" data-prog="s78" style="--tab-color:var(--accent-3);" onclick="switchProgramme('s78')">S7-8 Maitrise</button>
+    <button class="sub-tab active" data-prog="s12" style="--tab-color:var(--accent);" onclick="switchProgramme('s12')" data-i18n="tabS12">S1-2 Foundation</button>
+    <button class="sub-tab" data-prog="s34" style="--tab-color:var(--accent-2);" onclick="switchProgramme('s34')" data-i18n="tabS34">S3-4 Progression</button>
+    <button class="sub-tab" data-prog="s56" style="--tab-color:var(--warm);" onclick="switchProgramme('s56')" data-i18n="tabS56">S5-6 Intensive</button>
+    <button class="sub-tab" data-prog="s78" style="--tab-color:var(--accent-3);" onclick="switchProgramme('s78')" data-i18n="tabS78">S7-8 Mastery</button>
   </div>
 
   <!-- S1-2 -->
   <div id="prog-s12" class="training-programme active">
     <div class="programme-card">
       <div class="programme-header">
-        <div class="left"><div class="programme-week" style="background:#00d4aa22;color:var(--accent);">1-2</div><div><h3>Fondation</h3><div style="font-size:0.8rem;color:var(--text-muted);">Semaines 1 & 2</div></div></div>
-        <div class="tag" style="background:#00d4aa18;color:var(--accent);">Debutant</div>
+        <div class="left"><div class="programme-week" style="background:#00d4aa22;color:var(--accent);">1-2</div><div><h3 data-i18n="progFoundation">Foundation</h3><div style="font-size:0.8rem;color:var(--text-muted);" data-i18n="weeks12">Weeks 1 &amp; 2</div></div></div>
+        <div class="tag" style="background:#00d4aa18;color:var(--accent);" data-i18n="levelBeginner">Beginner</div>
       </div>
       <div class="programme-body">
-        <div class="exercise-row"><div><div class="name">Contractions lentes</div><div class="detail">Contracter 3s → Relacher 3s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> 10 reps x 3 series</div></div>
-        <div class="exercise-row"><div><div class="name">Contractions rapides</div><div class="detail">Contracter 1s → Relacher 1s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> 10 reps x 2 series</div></div>
+        <div class="exercise-row"><div><div class="name" data-i18n="exoSlowContractions">Slow contractions</div><div class="detail" data-i18n="exoS12Slow">Contract 3s &rarr; Release 3s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="repsS12Slow">10 reps x 3 sets</span></div></div>
+        <div class="exercise-row"><div><div class="name" data-i18n="exoFastContractions">Fast contractions</div><div class="detail" data-i18n="exoS12Fast">Contract 1s &rarr; Release 1s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="repsS12Fast">10 reps x 2 sets</span></div></div>
         <div style="text-align:center"><div class="est-time"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg> ~3 min 40</div></div>
       </div>
       <div class="inline-timer" id="timer-s12" data-phase="idle">
-        <div class="it-header" style="color:var(--accent);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg> Minuteur S1-2</div>
+        <div class="it-header" style="color:var(--accent);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg> <span data-i18n="timerS12">TIMER S1-2</span></div>
         <div class="it-exo-progress" id="dots-s12"></div>
-        <div class="it-exo-name" id="exo-s12">Pret a demarrer</div>
+        <div class="it-exo-name" id="exo-s12" data-i18n="ready">Ready to start</div>
         <div class="it-phase" id="phase-s12">—</div>
         <div class="kegel-ring" id="ring-s12"><svg class="ring-svg" viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"/><circle class="ring-progress" cx="60" cy="60" r="50"/><circle class="ring-core" cx="60" cy="60" r="30"/></svg><div class="ring-icon" id="ring-icon-s12"></div></div>
         <div class="it-display" id="display-s12" style="color:var(--accent);">0:00</div>
         <div class="it-meta" id="meta-s12">—</div>
         <div class="it-controls">
-          <button class="btn-sm primary" id="btn-s12" onclick="toggleInline('s12')"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg> Demarrer</button>
-          <button class="btn-sm ghost" onclick="resetInline('s12')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> Reset</button>
+          <button class="btn-sm primary" id="btn-s12" onclick="toggleInline('s12')"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg> <span data-i18n="btnStart">Start</span></button>
+          <button class="btn-sm ghost" onclick="resetInline('s12')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="btnReset">Reset</span></button>
         </div>
       </div>
     </div>
@@ -528,26 +553,26 @@
   <div id="prog-s34" class="training-programme">
     <div class="programme-card">
       <div class="programme-header">
-        <div class="left"><div class="programme-week" style="background:#7c5cfc22;color:var(--accent-2);">3-4</div><div><h3>Progression</h3><div style="font-size:0.8rem;color:var(--text-muted);">Semaines 3 & 4</div></div></div>
-        <div class="tag" style="background:#7c5cfc18;color:var(--accent-2);">Intermediaire</div>
+        <div class="left"><div class="programme-week" style="background:#7c5cfc22;color:var(--accent-2);">3-4</div><div><h3 data-i18n="progProgression">Progression</h3><div style="font-size:0.8rem;color:var(--text-muted);" data-i18n="weeks34">Weeks 3 &amp; 4</div></div></div>
+        <div class="tag" style="background:#7c5cfc18;color:var(--accent-2);" data-i18n="levelIntermediate">Intermediate</div>
       </div>
       <div class="programme-body">
-        <div class="exercise-row"><div><div class="name">Contractions lentes</div><div class="detail">Contracter 5s → Relacher 5s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> 10 reps x 3 series</div></div>
-        <div class="exercise-row"><div><div class="name">Contractions rapides</div><div class="detail">Contracter 1s → Relacher 1s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> 15 reps x 3 series</div></div>
-        <div class="exercise-row"><div><div class="name">Contraction escalier</div><div class="detail">25→50→75→100% (2s/palier) → relacher 5s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> 5 reps x 2 series</div></div>
+        <div class="exercise-row"><div><div class="name" data-i18n="exoSlowContractions">Slow contractions</div><div class="detail" data-i18n="exoS34Slow">Contract 5s &rarr; Release 5s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="repsS34Slow">10 reps x 3 sets</span></div></div>
+        <div class="exercise-row"><div><div class="name" data-i18n="exoFastContractions">Fast contractions</div><div class="detail" data-i18n="exoS34Fast">Contract 1s &rarr; Release 1s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="repsS34Fast">15 reps x 3 sets</span></div></div>
+        <div class="exercise-row"><div><div class="name" data-i18n="exoStaircase">Staircase contraction</div><div class="detail" data-i18n="exoS34Stair">25&rarr;50&rarr;75&rarr;100% (2s/step) &rarr; release 5s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="repsS34Stair">5 reps x 2 sets</span></div></div>
         <div style="text-align:center"><div class="est-time"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg> ~6 min 40</div></div>
       </div>
       <div class="inline-timer" id="timer-s34" data-phase="idle">
-        <div class="it-header" style="color:var(--accent-2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg> Minuteur S3-4</div>
+        <div class="it-header" style="color:var(--accent-2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg> <span data-i18n="timerS34">TIMER S3-4</span></div>
         <div class="it-exo-progress" id="dots-s34"></div>
-        <div class="it-exo-name" id="exo-s34">Pret a demarrer</div>
+        <div class="it-exo-name" id="exo-s34" data-i18n="ready">Ready to start</div>
         <div class="it-phase" id="phase-s34">—</div>
         <div class="kegel-ring" id="ring-s34"><svg class="ring-svg" viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"/><circle class="ring-progress" cx="60" cy="60" r="50"/><circle class="ring-core" cx="60" cy="60" r="30"/></svg><div class="ring-icon" id="ring-icon-s34"></div></div>
         <div class="it-display" id="display-s34" style="color:var(--accent-2);">0:00</div>
         <div class="it-meta" id="meta-s34">—</div>
         <div class="it-controls">
-          <button class="btn-sm primary" id="btn-s34" onclick="toggleInline('s34')"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg> Demarrer</button>
-          <button class="btn-sm ghost" onclick="resetInline('s34')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> Reset</button>
+          <button class="btn-sm primary" id="btn-s34" onclick="toggleInline('s34')"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg> <span data-i18n="btnStart">Start</span></button>
+          <button class="btn-sm ghost" onclick="resetInline('s34')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="btnReset">Reset</span></button>
         </div>
       </div>
     </div>
@@ -557,26 +582,26 @@
   <div id="prog-s56" class="training-programme">
     <div class="programme-card">
       <div class="programme-header">
-        <div class="left"><div class="programme-week" style="background:#fbbf2422;color:var(--warm);">5-6</div><div><h3>Intensification</h3><div style="font-size:0.8rem;color:var(--text-muted);">Semaines 5 & 6</div></div></div>
-        <div class="tag" style="background:#fbbf2418;color:var(--warm);">Avance</div>
+        <div class="left"><div class="programme-week" style="background:#fbbf2422;color:var(--warm);">5-6</div><div><h3 data-i18n="progIntensive">Intensive</h3><div style="font-size:0.8rem;color:var(--text-muted);" data-i18n="weeks56">Weeks 5 &amp; 6</div></div></div>
+        <div class="tag" style="background:#fbbf2418;color:var(--warm);" data-i18n="levelAdvanced">Advanced</div>
       </div>
       <div class="programme-body">
-        <div class="exercise-row"><div><div class="name">Contractions lentes</div><div class="detail">Contracter 8s → Relacher 5s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> 10 reps x 3 series</div></div>
-        <div class="exercise-row"><div><div class="name">Pulsations rapides</div><div class="detail">Contracter 1s / Relacher 1s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> 20 reps x 3 series</div></div>
-        <div class="exercise-row"><div><div class="name">Maintien long</div><div class="detail">Contraction max 15s → Relacher 10s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> 3 reps x 1 serie</div></div>
+        <div class="exercise-row"><div><div class="name" data-i18n="exoSlowContractions">Slow contractions</div><div class="detail" data-i18n="exoS56Slow">Contract 8s &rarr; Release 5s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="repsS56Slow">10 reps x 3 sets</span></div></div>
+        <div class="exercise-row"><div><div class="name" data-i18n="exoFastPulses">Fast pulses</div><div class="detail" data-i18n="exoS56Pulse">Contract 1s / Release 1s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="repsS56Pulse">20 reps x 3 sets</span></div></div>
+        <div class="exercise-row"><div><div class="name" data-i18n="exoLongHold">Long hold</div><div class="detail" data-i18n="exoS56Hold">Max contraction 15s &rarr; Release 10s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="repsS56Hold">3 reps x 1 set</span></div></div>
         <div style="text-align:center"><div class="est-time"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg> ~9 min 15</div></div>
       </div>
       <div class="inline-timer" id="timer-s56" data-phase="idle">
-        <div class="it-header" style="color:var(--warm);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg> Minuteur S5-6</div>
+        <div class="it-header" style="color:var(--warm);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg> <span data-i18n="timerS56">TIMER S5-6</span></div>
         <div class="it-exo-progress" id="dots-s56"></div>
-        <div class="it-exo-name" id="exo-s56">Pret a demarrer</div>
+        <div class="it-exo-name" id="exo-s56" data-i18n="ready">Ready to start</div>
         <div class="it-phase" id="phase-s56">—</div>
         <div class="kegel-ring" id="ring-s56"><svg class="ring-svg" viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"/><circle class="ring-progress" cx="60" cy="60" r="50"/><circle class="ring-core" cx="60" cy="60" r="30"/></svg><div class="ring-icon" id="ring-icon-s56"></div></div>
         <div class="it-display" id="display-s56" style="color:var(--warm);">0:00</div>
         <div class="it-meta" id="meta-s56">—</div>
         <div class="it-controls">
-          <button class="btn-sm primary" id="btn-s56" onclick="toggleInline('s56')"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg> Demarrer</button>
-          <button class="btn-sm ghost" onclick="resetInline('s56')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> Reset</button>
+          <button class="btn-sm primary" id="btn-s56" onclick="toggleInline('s56')"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg> <span data-i18n="btnStart">Start</span></button>
+          <button class="btn-sm ghost" onclick="resetInline('s56')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="btnReset">Reset</span></button>
         </div>
       </div>
     </div>
@@ -586,27 +611,27 @@
   <div id="prog-s78" class="training-programme">
     <div class="programme-card">
       <div class="programme-header">
-        <div class="left"><div class="programme-week" style="background:#ff6b6b22;color:var(--accent-3);">7-8</div><div><h3>Maitrise</h3><div style="font-size:0.8rem;color:var(--text-muted);">Semaines 7 & 8</div></div></div>
-        <div class="tag" style="background:#ff6b6b18;color:var(--accent-3);">Expert</div>
+        <div class="left"><div class="programme-week" style="background:#ff6b6b22;color:var(--accent-3);">7-8</div><div><h3 data-i18n="progMastery">Mastery</h3><div style="font-size:0.8rem;color:var(--text-muted);" data-i18n="weeks78">Weeks 7 &amp; 8</div></div></div>
+        <div class="tag" style="background:#ff6b6b18;color:var(--accent-3);" data-i18n="levelExpert">Expert</div>
       </div>
       <div class="programme-body">
-        <div class="exercise-row"><div><div class="name">Contractions lentes</div><div class="detail">Contracter 10s → Relacher 5s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> 12 reps x 3 series</div></div>
-        <div class="exercise-row"><div><div class="name">Pulsations express</div><div class="detail">Contracter 1s / Relacher 1s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> 30 reps x 3 series</div></div>
-        <div class="exercise-row"><div><div class="name">Maintien long</div><div class="detail">Contraction max 20s → Relacher 10s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> 5 reps x 1 serie</div></div>
-        <div class="exercise-row"><div><div class="name">Escalier inverse</div><div class="detail">100→75→50→25% (2s/palier) → relacher 5s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> 5 reps x 2 series</div></div>
+        <div class="exercise-row"><div><div class="name" data-i18n="exoSlowContractions">Slow contractions</div><div class="detail" data-i18n="exoS78Slow">Contract 10s &rarr; Release 5s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="repsS78Slow">12 reps x 3 sets</span></div></div>
+        <div class="exercise-row"><div><div class="name" data-i18n="exoExpressPulses">Express pulses</div><div class="detail" data-i18n="exoS78Pulse">Contract 1s / Release 1s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="repsS78Pulse">30 reps x 3 sets</span></div></div>
+        <div class="exercise-row"><div><div class="name" data-i18n="exoLongHold">Long hold</div><div class="detail" data-i18n="exoS78Hold">Max contraction 20s &rarr; Release 10s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="repsS78Hold">5 reps x 1 set</span></div></div>
+        <div class="exercise-row"><div><div class="name" data-i18n="exoReverseStaircase">Reverse staircase</div><div class="detail" data-i18n="exoS78Stair">100&rarr;75&rarr;50&rarr;25% (2s/step) &rarr; release 5s</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="repsS78Stair">5 reps x 2 sets</span></div></div>
         <div style="text-align:center"><div class="est-time"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg> ~14 min 10</div></div>
       </div>
       <div class="inline-timer" id="timer-s78" data-phase="idle">
-        <div class="it-header" style="color:var(--accent-3);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg> Minuteur S7-8</div>
+        <div class="it-header" style="color:var(--accent-3);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg> <span data-i18n="timerS78">TIMER S7-8</span></div>
         <div class="it-exo-progress" id="dots-s78"></div>
-        <div class="it-exo-name" id="exo-s78">Pret a demarrer</div>
+        <div class="it-exo-name" id="exo-s78" data-i18n="ready">Ready to start</div>
         <div class="it-phase" id="phase-s78">—</div>
         <div class="kegel-ring" id="ring-s78"><svg class="ring-svg" viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"/><circle class="ring-progress" cx="60" cy="60" r="50"/><circle class="ring-core" cx="60" cy="60" r="30"/></svg><div class="ring-icon" id="ring-icon-s78"></div></div>
         <div class="it-display" id="display-s78" style="color:var(--accent-3);">0:00</div>
         <div class="it-meta" id="meta-s78">—</div>
         <div class="it-controls">
-          <button class="btn-sm primary" id="btn-s78" onclick="toggleInline('s78')"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg> Demarrer</button>
-          <button class="btn-sm ghost" onclick="resetInline('s78')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> Reset</button>
+          <button class="btn-sm primary" id="btn-s78" onclick="toggleInline('s78')"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg> <span data-i18n="btnStart">Start</span></button>
+          <button class="btn-sm ghost" onclick="resetInline('s78')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="btnReset">Reset</span></button>
         </div>
       </div>
     </div>
@@ -614,17 +639,17 @@
 
   <!-- Overview section -->
   <div class="training-overview">
-    <div style="text-align:center;color:var(--text-dim);font-size:0.85rem;margin-bottom:4px;">Frequence hebdomadaire</div>
+    <div style="text-align:center;color:var(--text-dim);font-size:0.85rem;margin-bottom:4px;" data-i18n="weeklyFrequency">Weekly frequency</div>
     <div class="weekly-cal">
-      <div class="day-dot on">Lu</div><div class="day-dot on">Ma</div><div class="day-dot on">Me</div>
-      <div class="day-dot on">Je</div><div class="day-dot on">Ve</div><div class="day-dot on">Sa</div><div class="day-dot">Di</div>
+      <div class="day-dot on" data-i18n="dayMon">Mon</div><div class="day-dot on" data-i18n="dayTue">Tue</div><div class="day-dot on" data-i18n="dayWed">Wed</div>
+      <div class="day-dot on" data-i18n="dayThu">Thu</div><div class="day-dot on" data-i18n="dayFri">Fri</div><div class="day-dot on" data-i18n="daySat">Sat</div><div class="day-dot" data-i18n="daySun">Sun</div>
     </div>
-    <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-bottom:16px;">6 jours sur 7 — dimanche repos</div>
+    <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-bottom:16px;" data-i18n="weeklyNote">6 days out of 7 — Sunday rest</div>
     <div class="progress-visual">
-      <div class="progress-item"><div class="progress-ring"><svg viewBox="0 0 58 58"><circle class="bg" cx="29" cy="29" r="27"/><circle class="fill" cx="29" cy="29" r="27" stroke="var(--accent)" style="stroke-dashoffset:127;"/></svg><div class="value" style="color:var(--accent);">S1-2</div></div><div class="p-label">Fondation</div></div>
-      <div class="progress-item"><div class="progress-ring"><svg viewBox="0 0 58 58"><circle class="bg" cx="29" cy="29" r="27"/><circle class="fill" cx="29" cy="29" r="27" stroke="var(--accent-2)" style="stroke-dashoffset:85;"/></svg><div class="value" style="color:var(--accent-2);">S3-4</div></div><div class="p-label">Progression</div></div>
-      <div class="progress-item"><div class="progress-ring"><svg viewBox="0 0 58 58"><circle class="bg" cx="29" cy="29" r="27"/><circle class="fill" cx="29" cy="29" r="27" stroke="var(--warm)" style="stroke-dashoffset:42;"/></svg><div class="value" style="color:var(--warm);">S5-6</div></div><div class="p-label">Intensif</div></div>
-      <div class="progress-item"><div class="progress-ring"><svg viewBox="0 0 58 58"><circle class="bg" cx="29" cy="29" r="27"/><circle class="fill" cx="29" cy="29" r="27" stroke="var(--accent-3)" style="stroke-dashoffset:0;"/></svg><div class="value" style="color:var(--accent-3);">S7-8</div></div><div class="p-label">Maitrise</div></div>
+      <div class="progress-item"><div class="progress-ring"><svg viewBox="0 0 58 58"><circle class="bg" cx="29" cy="29" r="27"/><circle class="fill" cx="29" cy="29" r="27" stroke="var(--accent)" style="stroke-dashoffset:127;"/></svg><div class="value" style="color:var(--accent);">S1-2</div></div><div class="p-label" data-i18n="progFoundation">Foundation</div></div>
+      <div class="progress-item"><div class="progress-ring"><svg viewBox="0 0 58 58"><circle class="bg" cx="29" cy="29" r="27"/><circle class="fill" cx="29" cy="29" r="27" stroke="var(--accent-2)" style="stroke-dashoffset:85;"/></svg><div class="value" style="color:var(--accent-2);">S3-4</div></div><div class="p-label" data-i18n="progProgression">Progression</div></div>
+      <div class="progress-item"><div class="progress-ring"><svg viewBox="0 0 58 58"><circle class="bg" cx="29" cy="29" r="27"/><circle class="fill" cx="29" cy="29" r="27" stroke="var(--warm)" style="stroke-dashoffset:42;"/></svg><div class="value" style="color:var(--warm);">S5-6</div></div><div class="p-label" data-i18n="progIntensive">Intensive</div></div>
+      <div class="progress-item"><div class="progress-ring"><svg viewBox="0 0 58 58"><circle class="bg" cx="29" cy="29" r="27"/><circle class="fill" cx="29" cy="29" r="27" stroke="var(--accent-3)" style="stroke-dashoffset:0;"/></svg><div class="value" style="color:var(--accent-3);">S7-8</div></div><div class="p-label" data-i18n="progMastery">Mastery</div></div>
     </div>
   </div>
 </div>
@@ -635,47 +660,47 @@
 <div id="view-guide" class="view">
   <div class="guide-section technique-bg">
     <div class="container">
-      <div class="section-label"><span class="line"></span>Technique</div>
-      <h2>Identifier & activer le muscle PC</h2>
+      <div class="section-label"><span class="line"></span><span data-i18n="guideLabel">Technique</span></div>
+      <h2 data-i18n="guideTitle">Identify &amp; activate the PC muscle</h2>
       <div class="technique-block">
         <div class="technique-steps">
-          <div class="t-step"><div class="t-step-num">1</div><div class="t-step-content"><h4>Localisez le muscle</h4><p>En urinant, essayez d'interrompre le flux. Le muscle qui se contracte est le pubo-coccygien. Ne faites cela qu'une seule fois pour l'identification.</p></div></div>
-          <div class="t-step"><div class="t-step-num">2</div><div class="t-step-content"><h4>Isolez la contraction</h4><p>Allonge, contractez comme si vous reteniez un gaz. Abdominaux, fessiers et cuisses doivent rester detendus.</p></div></div>
-          <div class="t-step"><div class="t-step-num">3</div><div class="t-step-content"><h4>Respirez normalement</h4><p>Maintenez une respiration fluide. Si vous bloquez votre souffle, vous compensez avec les abdominaux.</p></div></div>
-          <div class="t-step"><div class="t-step-num">4</div><div class="t-step-content"><h4>Relachez completement</h4><p>Le relachement est aussi important que la contraction. Accordez-lui le meme temps.</p></div></div>
+          <div class="t-step"><div class="t-step-num">1</div><div class="t-step-content"><h4 data-i18n="step1Title">Locate the muscle</h4><p data-i18n="step1Desc">Try stopping urination midstream. The muscle that contracts is the pubococcygeus. Only do this once for identification.</p></div></div>
+          <div class="t-step"><div class="t-step-num">2</div><div class="t-step-content"><h4 data-i18n="step2Title">Isolate the contraction</h4><p data-i18n="step2Desc">Once identified, contract without engaging your abs, glutes or thighs. They must stay relaxed.</p></div></div>
+          <div class="t-step"><div class="t-step-num">3</div><div class="t-step-content"><h4 data-i18n="step3Title">Breathe normally</h4><p data-i18n="step3Desc">Never hold your breath during the exercise. If you do, you are compensating with your abs.</p></div></div>
+          <div class="t-step"><div class="t-step-num">4</div><div class="t-step-content"><h4 data-i18n="step4Title">Practice regularly</h4><p data-i18n="step4Desc">3 sessions per day, every day. The release is just as important as the contraction.</p></div></div>
         </div>
       </div>
       <div class="cycle-visual">
-        <div class="cycle-phase contract"><div class="phase-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 4l8 12H4z"/></svg></div><div class="phase-name" style="color:var(--accent);">Contracter</div><div class="phase-dur">Serrer & monter</div></div>
-        <div class="cycle-arrow">→</div>
-        <div class="cycle-phase hold"><div class="phase-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="4" y="4" width="6" height="16" rx="2"/><rect x="14" y="4" width="6" height="16" rx="2"/></svg></div><div class="phase-name" style="color:var(--accent-2);">Maintenir</div><div class="phase-dur">Garder la tension</div></div>
-        <div class="cycle-arrow">→</div>
-        <div class="cycle-phase release"><div class="phase-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 20l8-12H4z"/></svg></div><div class="phase-name" style="color:var(--warm);">Relacher</div><div class="phase-dur">Repos complet</div></div>
-        <div class="cycle-arrow">→</div>
-        <div class="cycle-phase contract"><div class="phase-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></div><div class="phase-name" style="color:var(--accent);">Repeter</div><div class="phase-dur">Cycle suivant</div></div>
+        <div class="cycle-phase contract"><div class="phase-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 4l8 12H4z"/></svg></div><div class="phase-name" style="color:var(--accent);" data-i18n="cycleContract">Contract</div><div class="phase-dur" data-i18n="cycleContractDesc">Squeeze &amp; lift</div></div>
+        <div class="cycle-arrow">&rarr;</div>
+        <div class="cycle-phase hold"><div class="phase-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="4" y="4" width="6" height="16" rx="2"/><rect x="14" y="4" width="6" height="16" rx="2"/></svg></div><div class="phase-name" style="color:var(--accent-2);" data-i18n="cycleHold">Hold</div><div class="phase-dur" data-i18n="cycleHoldDesc">Keep the tension</div></div>
+        <div class="cycle-arrow">&rarr;</div>
+        <div class="cycle-phase release"><div class="phase-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 20l8-12H4z"/></svg></div><div class="phase-name" style="color:var(--warm);" data-i18n="cycleRelease">Release</div><div class="phase-dur" data-i18n="cycleReleaseDesc">Full rest</div></div>
+        <div class="cycle-arrow">&rarr;</div>
+        <div class="cycle-phase contract"><div class="phase-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></div><div class="phase-name" style="color:var(--accent);" data-i18n="cycleRepeat">Repeat</div><div class="phase-dur" data-i18n="cycleRepeatDesc">Next cycle</div></div>
       </div>
     </div>
   </div>
   <div class="guide-section">
     <div class="container">
-      <div class="section-label"><span class="line"></span>Conseils</div>
-      <h2>Les regles d'or</h2>
+      <div class="section-label"><span class="line"></span><span data-i18n="tipsLabel">Tips</span></div>
+      <h2 data-i18n="tipsTitle">The golden rules</h2>
       <div class="tips-grid">
-        <div class="tip-card do"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div><h4>Regularite avant intensite</h4><p>Mieux vaut 3 mini-seances chaque jour qu'une longue session une fois par semaine.</p></div>
-        <div class="tip-card do"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div><h4>Pratiquez partout</h4><p>Au bureau, dans les transports, devant la TV… Personne ne voit que vous vous entrainez.</p></div>
-        <div class="tip-card do"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div><h4>Videz la vessie avant</h4><p>Pratiquez toujours vessie vide pour eviter l'inconfort et les risques d'infection.</p></div>
-        <div class="tip-card do"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div><h4>Patience & progression</h4><p>Premiers resultats entre 4 et 6 semaines. Ameliorations nettes a 3 mois.</p></div>
-        <div class="tip-card dont"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div><h4>Ne bloquez pas la respiration</h4><p>Respirez normalement pendant la contraction. L'apnee sollicite les abdominaux.</p></div>
-        <div class="tip-card dont"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div><h4>Ne contractez pas les fessiers</h4><p>Si vos fesses se serrent, vous n'isolez pas le bon muscle.</p></div>
-        <div class="tip-card dont"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div><h4>N'en faites pas trop</h4><p>Le surentrainement fatigue le muscle et cause l'effet inverse.</p></div>
-        <div class="tip-card dont"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div><h4>Ne pratiquez pas en urinant</h4><p>Arreter le flux ne sert qu'au test initial. En faire un exercice regulier pose probleme.</p></div>
+        <div class="tip-card do"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div><h4 data-i18n="tipDo1Title">Consistency over intensity</h4><p data-i18n="tipDo1Desc">Better 3 mini-sessions every day than one long session once a week.</p></div>
+        <div class="tip-card do"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div><h4 data-i18n="tipDo2Title">Practice anywhere</h4><p data-i18n="tipDo2Desc">At the office, on the bus, watching TV... No one can tell you're training.</p></div>
+        <div class="tip-card do"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div><h4 data-i18n="tipDo3Title">Empty your bladder first</h4><p data-i18n="tipDo3Desc">Always practice with an empty bladder to avoid discomfort and infection risk.</p></div>
+        <div class="tip-card do"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div><h4 data-i18n="tipDo4Title">Patience &amp; progression</h4><p data-i18n="tipDo4Desc">First results between 4 and 6 weeks. Clear improvements at 3 months.</p></div>
+        <div class="tip-card dont"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div><h4 data-i18n="tipDont1Title">Don't hold your breath</h4><p data-i18n="tipDont1Desc">Breathe normally during contraction. Apnea engages the abs.</p></div>
+        <div class="tip-card dont"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div><h4 data-i18n="tipDont2Title">Don't clench your glutes</h4><p data-i18n="tipDont2Desc">If your buttocks tighten, you're not isolating the right muscle.</p></div>
+        <div class="tip-card dont"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div><h4 data-i18n="tipDont3Title">Don't overdo it</h4><p data-i18n="tipDont3Desc">Overtraining fatigues the muscle and causes the opposite effect.</p></div>
+        <div class="tip-card dont"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div><h4 data-i18n="tipDont4Title">Don't practice while urinating</h4><p data-i18n="tipDont4Desc">Stopping the flow should only be a test. Doing it regularly causes problems.</p></div>
       </div>
     </div>
   </div>
   <footer>
-    <div class="disclaimer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Ce programme est fourni a titre informatif. En cas de douleur, d'incontinence persistante ou apres une chirurgie prostatique, consultez un kinesitherapeute specialise en reeducation perineale.</div>
+    <div class="disclaimer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> <span data-i18n="disclaimer">This programme is for informational purposes only. If you experience pain, persistent incontinence or after prostate surgery, consult a physiotherapist specialized in pelvic floor rehabilitation.</span></div>
     <div style="text-align:center;margin-top:16px;padding-bottom:8px;">
-      <a href="/privacy.html" style="color:var(--text-muted);font-size:0.75rem;text-decoration:none;">Politique de confidentialité</a>
+      <a href="/privacy.html" style="color:var(--text-muted);font-size:0.75rem;text-decoration:none;" data-i18n="privacyLink">Privacy policy</a>
     </div>
   </footer>
 </div>
@@ -683,24 +708,355 @@
 <!-- ═══ TAB BAR ═══ -->
 <nav class="tab-bar" role="tablist">
   <button class="tab-btn active" id="tab-accueil" role="tab" aria-selected="true" onclick="switchTab('accueil')">
-    <span class="tab-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg></span>Accueil
+    <span class="tab-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg></span><span data-i18n="navHome">Home</span>
   </button>
   <button class="tab-btn" id="tab-training" role="tab" aria-selected="false" onclick="switchTab('training')">
-    <span class="tab-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18.5l-3-2.5V12l3-4 3 1 2-3h2l2 3 3-1 3 4v4l-3 2.5"/><path d="M12 13v4"/></svg></span>Entrainement
+    <span class="tab-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18.5l-3-2.5V12l3-4 3 1 2-3h2l2 3 3-1 3 4v4l-3 2.5"/><path d="M12 13v4"/></svg></span><span data-i18n="navTraining">Training</span>
   </button>
   <button class="tab-btn" id="tab-guide" role="tab" aria-selected="false" onclick="switchTab('guide')">
-    <span class="tab-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></span>Guide
+    <span class="tab-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></span><span data-i18n="navGuide">Guide</span>
   </button>
 </nav>
 
 <noscript>
   <div style="padding:40px;text-align:center;color:#e8ecf4;background:#0a0e1a;min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;">
-    <h1 style="font-size:1.5rem;margin-bottom:16px;">JavaScript requis</h1>
-    <p style="color:#8892a8;">Cette application necessite JavaScript pour fonctionner. Veuillez l'activer dans votre navigateur.</p>
+    <h1 style="font-size:1.5rem;margin-bottom:16px;">JavaScript required</h1>
+    <p style="color:#8892a8;">This application requires JavaScript to function. Please enable it in your browser.</p>
   </div>
 </noscript>
 
 <script>
+/* ═══ TRANSLATIONS ═══ */
+const T = {
+  en: {
+    badge: "MEN'S PROGRAM",
+    subtitle: "Become a machine. 8-week Kegel program with guided timers.",
+    statWeeks: "Weeks", statPerDay: "Per day", statPerSession: "Per session",
+    benefits: "Benefits",
+    benefit1Title: "Urinary control", benefit1Desc: "Reduce leaks and strengthen the sphincter for better bladder control.",
+    benefit2Title: "Sexual performance", benefit2Desc: "Improve erection quality, ejaculation control and sensation intensity.",
+    benefit3Title: "Prostate prevention", benefit3Desc: "Maintain good pelvic circulation and support post-surgery recovery.",
+    benefit4Title: "Core stability", benefit4Desc: "Complete your deep core — the pelvic floor is the base of the abdominal unit.",
+    cta: "Start training",
+    trainingHeader: "Training", chooseProgramme: "Choose your programme",
+    tabS12: "S1-2 Foundation", tabS34: "S3-4 Progression", tabS56: "S5-6 Intensive", tabS78: "S7-8 Mastery",
+    progFoundation: "Foundation", progProgression: "Progression", progIntensive: "Intensive", progMastery: "Mastery",
+    levelBeginner: "Beginner", levelIntermediate: "Intermediate", levelAdvanced: "Advanced", levelExpert: "Expert",
+    weeks12: "Weeks 1 & 2", weeks34: "Weeks 3 & 4", weeks56: "Weeks 5 & 6", weeks78: "Weeks 7 & 8",
+    exoSlowContractions: "Slow contractions", exoFastContractions: "Fast contractions",
+    exoStaircase: "Staircase contraction", exoFastPulses: "Fast pulses",
+    exoLongHold: "Long hold", exoExpressPulses: "Express pulses", exoReverseStaircase: "Reverse staircase",
+    exoS12Slow: "Contract 3s \u2192 Release 3s", exoS12Fast: "Contract 1s \u2192 Release 1s",
+    exoS34Slow: "Contract 5s \u2192 Release 5s", exoS34Fast: "Contract 1s \u2192 Release 1s",
+    exoS34Stair: "25\u219250\u219275\u2192100% (2s/step) \u2192 release 5s",
+    exoS56Slow: "Contract 8s \u2192 Release 5s", exoS56Pulse: "Contract 1s / Release 1s",
+    exoS56Hold: "Max contraction 15s \u2192 Release 10s",
+    exoS78Slow: "Contract 10s \u2192 Release 5s", exoS78Pulse: "Contract 1s / Release 1s",
+    exoS78Hold: "Max contraction 20s \u2192 Release 10s",
+    exoS78Stair: "100\u219275\u219250\u219225% (2s/step) \u2192 release 5s",
+    repsS12Slow: "10 reps x 3 sets", repsS12Fast: "10 reps x 2 sets",
+    repsS34Slow: "10 reps x 3 sets", repsS34Fast: "15 reps x 3 sets", repsS34Stair: "5 reps x 2 sets",
+    repsS56Slow: "10 reps x 3 sets", repsS56Pulse: "20 reps x 3 sets", repsS56Hold: "3 reps x 1 set",
+    repsS78Slow: "12 reps x 3 sets", repsS78Pulse: "30 reps x 3 sets", repsS78Hold: "5 reps x 1 set", repsS78Stair: "5 reps x 2 sets",
+    timerS12: "TIMER S1-2", timerS34: "TIMER S3-4", timerS56: "TIMER S5-6", timerS78: "TIMER S7-8",
+    ready: "Ready to start",
+    btnStart: "Start", btnReset: "Reset", btnPause: "Pause", btnResume: "Resume", btnRestart: "Restart",
+    phase: { contract: "CONTRACT", release: "RELEASE", holdMax: "HOLD MAX", pct25: "25 %", pct50: "50 %", pct75: "75 %", pct100: "100 % MAX", rest: "REST" },
+    metaSet: "Set {sn}/{ts} \u2014 Rep. {rn}/{tr}",
+    metaRest: "Rest \u2014 next set {sn}/{ts}",
+    sessionDone: "Session complete!", programmeDone: "Well done, programme complete.",
+    countdown: "Get ready...", countdownGo: "GO!",
+    weeklyFrequency: "Weekly frequency",
+    dayMon: "Mon", dayTue: "Tue", dayWed: "Wed", dayThu: "Thu", dayFri: "Fri", daySat: "Sat", daySun: "Sun",
+    weeklyNote: "6 days out of 7 \u2014 Sunday rest",
+    guideLabel: "Technique", guideTitle: "Identify & activate the PC muscle",
+    step1Title: "Locate the muscle", step1Desc: "Try stopping urination midstream. The muscle that contracts is the pubococcygeus. Only do this once for identification.",
+    step2Title: "Isolate the contraction", step2Desc: "Once identified, contract without engaging your abs, glutes or thighs. They must stay relaxed.",
+    step3Title: "Breathe normally", step3Desc: "Never hold your breath during the exercise. If you do, you are compensating with your abs.",
+    step4Title: "Practice regularly", step4Desc: "3 sessions per day, every day. The release is just as important as the contraction.",
+    cycleTitle: "The Kegel cycle",
+    cycleContract: "Contract", cycleContractDesc: "Squeeze & lift",
+    cycleHold: "Hold", cycleHoldDesc: "Keep the tension",
+    cycleRelease: "Release", cycleReleaseDesc: "Full rest",
+    cycleRepeat: "Repeat", cycleRepeatDesc: "Next cycle",
+    tipsLabel: "Tips", tipsTitle: "The golden rules",
+    tipDo1Title: "Consistency over intensity", tipDo1Desc: "Better 3 mini-sessions every day than one long session once a week.",
+    tipDo2Title: "Practice anywhere", tipDo2Desc: "At the office, on the bus, watching TV... No one can tell you're training.",
+    tipDo3Title: "Empty your bladder first", tipDo3Desc: "Always practice with an empty bladder to avoid discomfort and infection risk.",
+    tipDo4Title: "Patience & progression", tipDo4Desc: "First results between 4 and 6 weeks. Clear improvements at 3 months.",
+    tipDont1Title: "Don't hold your breath", tipDont1Desc: "Breathe normally during contraction. Apnea engages the abs.",
+    tipDont2Title: "Don't clench your glutes", tipDont2Desc: "If your buttocks tighten, you're not isolating the right muscle.",
+    tipDont3Title: "Don't overdo it", tipDont3Desc: "Overtraining fatigues the muscle and causes the opposite effect.",
+    tipDont4Title: "Don't practice while urinating", tipDont4Desc: "Stopping the flow should only be a test. Doing it regularly causes problems.",
+    disclaimer: "This programme is for informational purposes only. If you experience pain, persistent incontinence or after prostate surgery, consult a physiotherapist specialized in pelvic floor rehabilitation.",
+    privacyLink: "Privacy policy",
+    navHome: "Home", navTraining: "Training", navGuide: "Guide",
+    offline: "Offline mode",
+    installBanner: "Install the app for quick access", installBtn: "Install", installDismiss: "Later",
+    // Exercise names for timer engine
+    exoNameSlowContractions: "Slow contractions", exoNameFastContractions: "Fast contractions",
+    exoNameStaircase: "Staircase contraction", exoNameFastPulses: "Fast pulses",
+    exoNameLongHold: "Long hold", exoNameExpressPulses: "Express pulses", exoNameReverseStaircase: "Reverse staircase"
+  },
+  fr: {
+    badge: "PROGRAMME HOMME",
+    subtitle: "Deviens une machine. Programme Kegel en 8 semaines avec minuteurs guides.",
+    statWeeks: "Semaines", statPerDay: "Par jour", statPerSession: "Par seance",
+    benefits: "Benefices",
+    benefit1Title: "Controle urinaire", benefit1Desc: "Reduisez les fuites urinaires et renforcez le sphincter pour un meilleur controle de la vessie.",
+    benefit2Title: "Performance sexuelle", benefit2Desc: "Ameliorez la qualite des erections, le controle de l'ejaculation et l'intensite des sensations.",
+    benefit3Title: "Prevention prostate", benefit3Desc: "Maintenez une bonne circulation pelvienne et soutenez la recuperation post-chirurgie prostatique.",
+    benefit4Title: "Stabilite du core", benefit4Desc: "Completez votre gainage profond \u2014 le plancher pelvien est le \u00ab fond \u00bb du caisson abdominal.",
+    cta: "Commencer l'entrainement",
+    trainingHeader: "Entrainement", chooseProgramme: "Choisissez votre programme",
+    tabS12: "S1-2 Fondation", tabS34: "S3-4 Progression", tabS56: "S5-6 Intensif", tabS78: "S7-8 Maitrise",
+    progFoundation: "Fondation", progProgression: "Progression", progIntensive: "Intensification", progMastery: "Maitrise",
+    levelBeginner: "Debutant", levelIntermediate: "Intermediaire", levelAdvanced: "Avance", levelExpert: "Expert",
+    weeks12: "Semaines 1 & 2", weeks34: "Semaines 3 & 4", weeks56: "Semaines 5 & 6", weeks78: "Semaines 7 & 8",
+    exoSlowContractions: "Contractions lentes", exoFastContractions: "Contractions rapides",
+    exoStaircase: "Contraction escalier", exoFastPulses: "Pulsations rapides",
+    exoLongHold: "Maintien long", exoExpressPulses: "Pulsations express", exoReverseStaircase: "Escalier inverse",
+    exoS12Slow: "Contracter 3s \u2192 Relacher 3s", exoS12Fast: "Contracter 1s \u2192 Relacher 1s",
+    exoS34Slow: "Contracter 5s \u2192 Relacher 5s", exoS34Fast: "Contracter 1s \u2192 Relacher 1s",
+    exoS34Stair: "25\u219250\u219275\u2192100% (2s/palier) \u2192 relacher 5s",
+    exoS56Slow: "Contracter 8s \u2192 Relacher 5s", exoS56Pulse: "Contracter 1s / Relacher 1s",
+    exoS56Hold: "Contraction max 15s \u2192 Relacher 10s",
+    exoS78Slow: "Contracter 10s \u2192 Relacher 5s", exoS78Pulse: "Contracter 1s / Relacher 1s",
+    exoS78Hold: "Contraction max 20s \u2192 Relacher 10s",
+    exoS78Stair: "100\u219275\u219250\u219225% (2s/palier) \u2192 relacher 5s",
+    repsS12Slow: "10 reps x 3 series", repsS12Fast: "10 reps x 2 series",
+    repsS34Slow: "10 reps x 3 series", repsS34Fast: "15 reps x 3 series", repsS34Stair: "5 reps x 2 series",
+    repsS56Slow: "10 reps x 3 series", repsS56Pulse: "20 reps x 3 series", repsS56Hold: "3 reps x 1 serie",
+    repsS78Slow: "12 reps x 3 series", repsS78Pulse: "30 reps x 3 series", repsS78Hold: "5 reps x 1 serie", repsS78Stair: "5 reps x 2 series",
+    timerS12: "MINUTEUR S1-2", timerS34: "MINUTEUR S3-4", timerS56: "MINUTEUR S5-6", timerS78: "MINUTEUR S7-8",
+    ready: "Pret a demarrer",
+    btnStart: "Demarrer", btnReset: "Reset", btnPause: "Pause", btnResume: "Reprendre", btnRestart: "Recommencer",
+    phase: { contract: "CONTRACTER", release: "RELACHER", holdMax: "MAINTENIR MAX", pct25: "25 %", pct50: "50 %", pct75: "75 %", pct100: "100 % MAX", rest: "REPOS" },
+    metaSet: "Serie {sn}/{ts} \u2014 Rep. {rn}/{tr}",
+    metaRest: "Repos \u2014 prochaine serie {sn}/{ts}",
+    sessionDone: "Seance terminee !", programmeDone: "Bravo, programme complet.",
+    countdown: "Preparez-vous...", countdownGo: "GO!",
+    weeklyFrequency: "Frequence hebdomadaire",
+    dayMon: "Lu", dayTue: "Ma", dayWed: "Me", dayThu: "Je", dayFri: "Ve", daySat: "Sa", daySun: "Di",
+    weeklyNote: "6 jours sur 7 \u2014 dimanche repos",
+    guideLabel: "Technique", guideTitle: "Identifier & activer le muscle PC",
+    step1Title: "Localisez le muscle", step1Desc: "En urinant, essayez d'interrompre le flux. Le muscle qui se contracte est le pubo-coccygien. Ne faites cela qu'une seule fois pour l'identification.",
+    step2Title: "Isolez la contraction", step2Desc: "Allonge, contractez comme si vous reteniez un gaz. Abdominaux, fessiers et cuisses doivent rester detendus.",
+    step3Title: "Respirez normalement", step3Desc: "Maintenez une respiration fluide. Si vous bloquez votre souffle, vous compensez avec les abdominaux.",
+    step4Title: "Relachez completement", step4Desc: "Le relachement est aussi important que la contraction. Accordez-lui le meme temps.",
+    cycleTitle: "Le cycle Kegel",
+    cycleContract: "Contracter", cycleContractDesc: "Serrer & monter",
+    cycleHold: "Maintenir", cycleHoldDesc: "Garder la tension",
+    cycleRelease: "Relacher", cycleReleaseDesc: "Repos complet",
+    cycleRepeat: "Repeter", cycleRepeatDesc: "Cycle suivant",
+    tipsLabel: "Conseils", tipsTitle: "Les regles d'or",
+    tipDo1Title: "Regularite avant intensite", tipDo1Desc: "Mieux vaut 3 mini-seances chaque jour qu'une longue session une fois par semaine.",
+    tipDo2Title: "Pratiquez partout", tipDo2Desc: "Au bureau, dans les transports, devant la TV\u2026 Personne ne voit que vous vous entrainez.",
+    tipDo3Title: "Videz la vessie avant", tipDo3Desc: "Pratiquez toujours vessie vide pour eviter l'inconfort et les risques d'infection.",
+    tipDo4Title: "Patience & progression", tipDo4Desc: "Premiers resultats entre 4 et 6 semaines. Ameliorations nettes a 3 mois.",
+    tipDont1Title: "Ne bloquez pas la respiration", tipDont1Desc: "Respirez normalement pendant la contraction. L'apnee sollicite les abdominaux.",
+    tipDont2Title: "Ne contractez pas les fessiers", tipDont2Desc: "Si vos fesses se serrent, vous n'isolez pas le bon muscle.",
+    tipDont3Title: "N'en faites pas trop", tipDont3Desc: "Le surentrainement fatigue le muscle et cause l'effet inverse.",
+    tipDont4Title: "Ne pratiquez pas en urinant", tipDont4Desc: "Arreter le flux ne sert qu'au test initial. En faire un exercice regulier pose probleme.",
+    disclaimer: "Ce programme est fourni a titre informatif. En cas de douleur, d'incontinence persistante ou apres une chirurgie prostatique, consultez un kinesitherapeute specialise en reeducation perineale.",
+    privacyLink: "Politique de confidentialit\u00e9",
+    navHome: "Accueil", navTraining: "Entrainement", navGuide: "Guide",
+    offline: "Mode hors-ligne",
+    installBanner: "Installer l'app pour un acces rapide", installBtn: "Installer", installDismiss: "Plus tard",
+    exoNameSlowContractions: "Contractions lentes", exoNameFastContractions: "Contractions rapides",
+    exoNameStaircase: "Contraction escalier", exoNameFastPulses: "Pulsations rapides",
+    exoNameLongHold: "Maintien long", exoNameExpressPulses: "Pulsations express", exoNameReverseStaircase: "Escalier inverse"
+  },
+  pt: {
+    badge: "PROGRAMA MASCULINO",
+    subtitle: "Torne-se uma m\u00e1quina. Programa Kegel de 8 semanas com temporizadores guiados.",
+    statWeeks: "Semanas", statPerDay: "Por dia", statPerSession: "Por sess\u00e3o",
+    benefits: "Benef\u00edcios",
+    benefit1Title: "Controle urin\u00e1rio", benefit1Desc: "Reduza vazamentos e fortale\u00e7a o esf\u00edncter para melhor controle da bexiga.",
+    benefit2Title: "Desempenho sexual", benefit2Desc: "Melhore a qualidade das ere\u00e7\u00f5es, o controle da ejacula\u00e7\u00e3o e a intensidade das sensa\u00e7\u00f5es.",
+    benefit3Title: "Preven\u00e7\u00e3o prost\u00e1tica", benefit3Desc: "Mantenha boa circula\u00e7\u00e3o p\u00e9lvica e apoie a recupera\u00e7\u00e3o p\u00f3s-cirurgia.",
+    benefit4Title: "Estabilidade do core", benefit4Desc: "Complete seu core profundo \u2014 o assoalho p\u00e9lvico \u00e9 a base da unidade abdominal.",
+    cta: "Come\u00e7ar treino",
+    trainingHeader: "Treino", chooseProgramme: "Escolha seu programa",
+    tabS12: "S1-2 Funda\u00e7\u00e3o", tabS34: "S3-4 Progress\u00e3o", tabS56: "S5-6 Intensivo", tabS78: "S7-8 Maestria",
+    progFoundation: "Funda\u00e7\u00e3o", progProgression: "Progress\u00e3o", progIntensive: "Intensivo", progMastery: "Maestria",
+    levelBeginner: "Iniciante", levelIntermediate: "Intermedi\u00e1rio", levelAdvanced: "Avan\u00e7ado", levelExpert: "Especialista",
+    weeks12: "Semanas 1 e 2", weeks34: "Semanas 3 e 4", weeks56: "Semanas 5 e 6", weeks78: "Semanas 7 e 8",
+    exoSlowContractions: "Contra\u00e7\u00f5es lentas", exoFastContractions: "Contra\u00e7\u00f5es r\u00e1pidas",
+    exoStaircase: "Contra\u00e7\u00e3o escada", exoFastPulses: "Pulsa\u00e7\u00f5es r\u00e1pidas",
+    exoLongHold: "Sustenta\u00e7\u00e3o longa", exoExpressPulses: "Pulsa\u00e7\u00f5es express", exoReverseStaircase: "Escada reversa",
+    exoS12Slow: "Contrair 3s \u2192 Relaxar 3s", exoS12Fast: "Contrair 1s \u2192 Relaxar 1s",
+    exoS34Slow: "Contrair 5s \u2192 Relaxar 5s", exoS34Fast: "Contrair 1s \u2192 Relaxar 1s",
+    exoS34Stair: "25\u219250\u219275\u2192100% (2s/degrau) \u2192 relaxar 5s",
+    exoS56Slow: "Contrair 8s \u2192 Relaxar 5s", exoS56Pulse: "Contrair 1s / Relaxar 1s",
+    exoS56Hold: "Contra\u00e7\u00e3o max 15s \u2192 Relaxar 10s",
+    exoS78Slow: "Contrair 10s \u2192 Relaxar 5s", exoS78Pulse: "Contrair 1s / Relaxar 1s",
+    exoS78Hold: "Contra\u00e7\u00e3o max 20s \u2192 Relaxar 10s",
+    exoS78Stair: "100\u219275\u219250\u219225% (2s/degrau) \u2192 relaxar 5s",
+    repsS12Slow: "10 reps x 3 s\u00e9ries", repsS12Fast: "10 reps x 2 s\u00e9ries",
+    repsS34Slow: "10 reps x 3 s\u00e9ries", repsS34Fast: "15 reps x 3 s\u00e9ries", repsS34Stair: "5 reps x 2 s\u00e9ries",
+    repsS56Slow: "10 reps x 3 s\u00e9ries", repsS56Pulse: "20 reps x 3 s\u00e9ries", repsS56Hold: "3 reps x 1 s\u00e9rie",
+    repsS78Slow: "12 reps x 3 s\u00e9ries", repsS78Pulse: "30 reps x 3 s\u00e9ries", repsS78Hold: "5 reps x 1 s\u00e9rie", repsS78Stair: "5 reps x 2 s\u00e9ries",
+    timerS12: "TEMPORIZADOR S1-2", timerS34: "TEMPORIZADOR S3-4", timerS56: "TEMPORIZADOR S5-6", timerS78: "TEMPORIZADOR S7-8",
+    ready: "Pronto para come\u00e7ar",
+    btnStart: "Iniciar", btnReset: "Reiniciar", btnPause: "Pausa", btnResume: "Retomar", btnRestart: "Recome\u00e7ar",
+    phase: { contract: "CONTRAIR", release: "RELAXAR", holdMax: "SUSTENTAR MAX", pct25: "25 %", pct50: "50 %", pct75: "75 %", pct100: "100 % MAX", rest: "DESCANSO" },
+    metaSet: "S\u00e9rie {sn}/{ts} \u2014 Rep. {rn}/{tr}",
+    metaRest: "Descanso \u2014 pr\u00f3xima s\u00e9rie {sn}/{ts}",
+    sessionDone: "Sess\u00e3o conclu\u00edda!", programmeDone: "Parab\u00e9ns, programa completo.",
+    countdown: "Prepare-se...", countdownGo: "GO!",
+    weeklyFrequency: "Frequ\u00eancia semanal",
+    dayMon: "Seg", dayTue: "Ter", dayWed: "Qua", dayThu: "Qui", dayFri: "Sex", daySat: "S\u00e1b", daySun: "Dom",
+    weeklyNote: "6 dias em 7 \u2014 domingo descanso",
+    guideLabel: "T\u00e9cnica", guideTitle: "Identificar o m\u00fasculo PC",
+    step1Title: "Localize o m\u00fasculo", step1Desc: "Tente parar a mic\u00e7\u00e3o no meio. O m\u00fasculo que contrai \u00e9 o pubococcigeo. Fa\u00e7a isso apenas uma vez para identifica\u00e7\u00e3o.",
+    step2Title: "Isole a contra\u00e7\u00e3o", step2Desc: "Uma vez identificado, contraia sem acionar abdominais, gl\u00fateos ou coxas. Devem ficar relaxados.",
+    step3Title: "Respire normalmente", step3Desc: "Nunca prenda a respira\u00e7\u00e3o durante o exerc\u00edcio. Se prender, est\u00e1 compensando com os abdominais.",
+    step4Title: "Pratique regularmente", step4Desc: "3 sess\u00f5es por dia, todos os dias. O relaxamento \u00e9 t\u00e3o importante quanto a contra\u00e7\u00e3o.",
+    cycleTitle: "O ciclo Kegel",
+    cycleContract: "Contrair", cycleContractDesc: "Apertar e levantar",
+    cycleHold: "Sustentar", cycleHoldDesc: "Manter a tens\u00e3o",
+    cycleRelease: "Relaxar", cycleReleaseDesc: "Descanso completo",
+    cycleRepeat: "Repetir", cycleRepeatDesc: "Pr\u00f3ximo ciclo",
+    tipsLabel: "Dicas", tipsTitle: "As regras de ouro",
+    tipDo1Title: "Regularidade acima de intensidade", tipDo1Desc: "Melhor 3 mini-sess\u00f5es por dia do que uma longa sess\u00e3o por semana.",
+    tipDo2Title: "Pratique em qualquer lugar", tipDo2Desc: "No escrit\u00f3rio, no \u00f4nibus, assistindo TV... Ningu\u00e9m percebe.",
+    tipDo3Title: "Esvazie a bexiga antes", tipDo3Desc: "Pratique sempre com a bexiga vazia para evitar desconforto e risco de infec\u00e7\u00e3o.",
+    tipDo4Title: "Paci\u00eancia e progress\u00e3o", tipDo4Desc: "Primeiros resultados entre 4 e 6 semanas. Melhorias claras em 3 meses.",
+    tipDont1Title: "N\u00e3o prenda a respira\u00e7\u00e3o", tipDont1Desc: "Respire normalmente durante a contra\u00e7\u00e3o. A apneia aciona os abdominais.",
+    tipDont2Title: "N\u00e3o contraia os gl\u00fateos", tipDont2Desc: "Se suas n\u00e1degas apertam, voc\u00ea n\u00e3o est\u00e1 isolando o m\u00fasculo certo.",
+    tipDont3Title: "N\u00e3o exagere", tipDont3Desc: "O excesso de treino fadiga o m\u00fasculo e causa o efeito contr\u00e1rio.",
+    tipDont4Title: "N\u00e3o pratique ao urinar", tipDont4Desc: "Parar o fluxo serve apenas como teste. Fazer isso regularmente causa problemas.",
+    disclaimer: "Este programa \u00e9 apenas informativo. Em caso de dor, incontin\u00eancia persistente ou ap\u00f3s cirurgia prost\u00e1tica, consulte um fisioterapeuta especializado em reabilita\u00e7\u00e3o do assoalho p\u00e9lvico.",
+    privacyLink: "Pol\u00edtica de privacidade",
+    navHome: "In\u00edcio", navTraining: "Treino", navGuide: "Guia",
+    offline: "Modo offline",
+    installBanner: "Instale o app para acesso r\u00e1pido", installBtn: "Instalar", installDismiss: "Depois",
+    exoNameSlowContractions: "Contra\u00e7\u00f5es lentas", exoNameFastContractions: "Contra\u00e7\u00f5es r\u00e1pidas",
+    exoNameStaircase: "Contra\u00e7\u00e3o escada", exoNameFastPulses: "Pulsa\u00e7\u00f5es r\u00e1pidas",
+    exoNameLongHold: "Sustenta\u00e7\u00e3o longa", exoNameExpressPulses: "Pulsa\u00e7\u00f5es express", exoNameReverseStaircase: "Escada reversa"
+  },
+  es: {
+    badge: "PROGRAMA MASCULINO",
+    subtitle: "Convi\u00e9rtete en una m\u00e1quina. Programa Kegel de 8 semanas con temporizadores guiados.",
+    statWeeks: "Semanas", statPerDay: "Por d\u00eda", statPerSession: "Por sesi\u00f3n",
+    benefits: "Beneficios",
+    benefit1Title: "Control urinario", benefit1Desc: "Reduce las p\u00e9rdidas y fortalece el esf\u00ednter para un mejor control de la vejiga.",
+    benefit2Title: "Rendimiento sexual", benefit2Desc: "Mejora la calidad de las erecciones, el control de la eyaculaci\u00f3n y la intensidad de las sensaciones.",
+    benefit3Title: "Prevenci\u00f3n prost\u00e1tica", benefit3Desc: "Mant\u00e9n una buena circulaci\u00f3n p\u00e9lvica y apoya la recuperaci\u00f3n post-cirug\u00eda.",
+    benefit4Title: "Estabilidad del core", benefit4Desc: "Completa tu core profundo \u2014 el suelo p\u00e9lvico es la base de la unidad abdominal.",
+    cta: "Empezar entrenamiento",
+    trainingHeader: "Entrenamiento", chooseProgramme: "Elige tu programa",
+    tabS12: "S1-2 Fundaci\u00f3n", tabS34: "S3-4 Progresi\u00f3n", tabS56: "S5-6 Intensivo", tabS78: "S7-8 Maestr\u00eda",
+    progFoundation: "Fundaci\u00f3n", progProgression: "Progresi\u00f3n", progIntensive: "Intensivo", progMastery: "Maestr\u00eda",
+    levelBeginner: "Principiante", levelIntermediate: "Intermedio", levelAdvanced: "Avanzado", levelExpert: "Experto",
+    weeks12: "Semanas 1 y 2", weeks34: "Semanas 3 y 4", weeks56: "Semanas 5 y 6", weeks78: "Semanas 7 y 8",
+    exoSlowContractions: "Contracciones lentas", exoFastContractions: "Contracciones r\u00e1pidas",
+    exoStaircase: "Contracci\u00f3n escalera", exoFastPulses: "Pulsaciones r\u00e1pidas",
+    exoLongHold: "Retenci\u00f3n larga", exoExpressPulses: "Pulsaciones express", exoReverseStaircase: "Escalera inversa",
+    exoS12Slow: "Contraer 3s \u2192 Relajar 3s", exoS12Fast: "Contraer 1s \u2192 Relajar 1s",
+    exoS34Slow: "Contraer 5s \u2192 Relajar 5s", exoS34Fast: "Contraer 1s \u2192 Relajar 1s",
+    exoS34Stair: "25\u219250\u219275\u2192100% (2s/pelda\u00f1o) \u2192 relajar 5s",
+    exoS56Slow: "Contraer 8s \u2192 Relajar 5s", exoS56Pulse: "Contraer 1s / Relajar 1s",
+    exoS56Hold: "Contracci\u00f3n max 15s \u2192 Relajar 10s",
+    exoS78Slow: "Contraer 10s \u2192 Relajar 5s", exoS78Pulse: "Contraer 1s / Relajar 1s",
+    exoS78Hold: "Contracci\u00f3n max 20s \u2192 Relajar 10s",
+    exoS78Stair: "100\u219275\u219250\u219225% (2s/pelda\u00f1o) \u2192 relajar 5s",
+    repsS12Slow: "10 reps x 3 series", repsS12Fast: "10 reps x 2 series",
+    repsS34Slow: "10 reps x 3 series", repsS34Fast: "15 reps x 3 series", repsS34Stair: "5 reps x 2 series",
+    repsS56Slow: "10 reps x 3 series", repsS56Pulse: "20 reps x 3 series", repsS56Hold: "3 reps x 1 serie",
+    repsS78Slow: "12 reps x 3 series", repsS78Pulse: "30 reps x 3 series", repsS78Hold: "5 reps x 1 serie", repsS78Stair: "5 reps x 2 series",
+    timerS12: "TEMPORIZADOR S1-2", timerS34: "TEMPORIZADOR S3-4", timerS56: "TEMPORIZADOR S5-6", timerS78: "TEMPORIZADOR S7-8",
+    ready: "Listo para empezar",
+    btnStart: "Empezar", btnReset: "Reiniciar", btnPause: "Pausa", btnResume: "Reanudar", btnRestart: "Reiniciar",
+    phase: { contract: "CONTRAER", release: "RELAJAR", holdMax: "MANTENER MAX", pct25: "25 %", pct50: "50 %", pct75: "75 %", pct100: "100 % MAX", rest: "DESCANSO" },
+    metaSet: "Serie {sn}/{ts} \u2014 Rep. {rn}/{tr}",
+    metaRest: "Descanso \u2014 siguiente serie {sn}/{ts}",
+    sessionDone: "\u00a1Sesi\u00f3n completada!", programmeDone: "Bravo, programa completo.",
+    countdown: "Prep\u00e1rate...", countdownGo: "GO!",
+    weeklyFrequency: "Frecuencia semanal",
+    dayMon: "Lun", dayTue: "Mar", dayWed: "Mi\u00e9", dayThu: "Jue", dayFri: "Vie", daySat: "S\u00e1b", daySun: "Dom",
+    weeklyNote: "6 d\u00edas de 7 \u2014 domingo descanso",
+    guideLabel: "T\u00e9cnica", guideTitle: "Identificar el m\u00fasculo PC",
+    step1Title: "Localiza el m\u00fasculo", step1Desc: "Intenta detener la micci\u00f3n a mitad. El m\u00fasculo que se contrae es el pubococcigeo. Hazlo solo una vez para identificarlo.",
+    step2Title: "A\u00edsla la contracci\u00f3n", step2Desc: "Una vez identificado, contrae sin activar abdominales, gl\u00fateos ni muslos. Deben quedar relajados.",
+    step3Title: "Respira normalmente", step3Desc: "Nunca contengas la respiraci\u00f3n durante el ejercicio. Si lo haces, est\u00e1s compensando con los abdominales.",
+    step4Title: "Practica regularmente", step4Desc: "3 sesiones al d\u00eda, todos los d\u00edas. La relajaci\u00f3n es tan importante como la contracci\u00f3n.",
+    cycleTitle: "El ciclo Kegel",
+    cycleContract: "Contraer", cycleContractDesc: "Apretar y elevar",
+    cycleHold: "Mantener", cycleHoldDesc: "Mantener la tensi\u00f3n",
+    cycleRelease: "Relajar", cycleReleaseDesc: "Descanso completo",
+    cycleRepeat: "Repetir", cycleRepeatDesc: "Siguiente ciclo",
+    tipsLabel: "Consejos", tipsTitle: "Las reglas de oro",
+    tipDo1Title: "Regularidad antes que intensidad", tipDo1Desc: "Mejor 3 mini-sesiones cada d\u00eda que una sesi\u00f3n larga una vez por semana.",
+    tipDo2Title: "Practica en cualquier lugar", tipDo2Desc: "En la oficina, en el bus, viendo la TV... Nadie nota que est\u00e1s entrenando.",
+    tipDo3Title: "Vac\u00eda la vejiga antes", tipDo3Desc: "Practica siempre con la vejiga vac\u00eda para evitar molestias y riesgo de infecci\u00f3n.",
+    tipDo4Title: "Paciencia y progresi\u00f3n", tipDo4Desc: "Primeros resultados entre 4 y 6 semanas. Mejoras claras a los 3 meses.",
+    tipDont1Title: "No contengas la respiraci\u00f3n", tipDont1Desc: "Respira normalmente durante la contracci\u00f3n. La apnea activa los abdominales.",
+    tipDont2Title: "No contraigas los gl\u00fateos", tipDont2Desc: "Si tus gl\u00fateos se aprietan, no est\u00e1s aislando el m\u00fasculo correcto.",
+    tipDont3Title: "No exageres", tipDont3Desc: "El sobreentrenamiento fatiga el m\u00fasculo y causa el efecto contrario.",
+    tipDont4Title: "No practiques al orinar", tipDont4Desc: "Detener el flujo solo sirve como test. Hacerlo regularmente causa problemas.",
+    disclaimer: "Este programa es solo informativo. En caso de dolor, incontinencia persistente o tras cirug\u00eda prost\u00e1tica, consulta a un fisioterapeuta especializado en rehabilitaci\u00f3n del suelo p\u00e9lvico.",
+    privacyLink: "Pol\u00edtica de privacidad",
+    navHome: "Inicio", navTraining: "Entrenamiento", navGuide: "Gu\u00eda",
+    offline: "Modo sin conexi\u00f3n",
+    installBanner: "Instala la app para acceso r\u00e1pido", installBtn: "Instalar", installDismiss: "Despu\u00e9s",
+    exoNameSlowContractions: "Contracciones lentas", exoNameFastContractions: "Contracciones r\u00e1pidas",
+    exoNameStaircase: "Contracci\u00f3n escalera", exoNameFastPulses: "Pulsaciones r\u00e1pidas",
+    exoNameLongHold: "Retenci\u00f3n larga", exoNameExpressPulses: "Pulsaciones express", exoNameReverseStaircase: "Escalera inversa"
+  }
+};
+
+/* ═══ i18n ENGINE ═══ */
+let curLang = 'en';
+
+function applyLang(lang) {
+  if (!T[lang]) lang = 'en';
+  curLang = lang;
+  localStorage.setItem('kegod-lang', lang);
+  document.documentElement.lang = lang;
+  document.getElementById('langLabel').textContent = lang.toUpperCase();
+
+  // Update all data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (T[lang][key] !== undefined) {
+      el.textContent = T[lang][key];
+    }
+  });
+
+  // Update lang menu active state
+  document.querySelectorAll('#langMenu button').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const langMap = { en: 0, fr: 1, pt: 2, es: 3 };
+  const activeBtn = document.querySelectorAll('#langMenu button')[langMap[lang]];
+  if (activeBtn) activeBtn.classList.add('active');
+}
+
+function setLang(lang) {
+  applyLang(lang);
+  // Reset all idle timers to update ready text
+  ['s12','s34','s56','s78'].forEach(id => {
+    if (timers[id] && !timers[id].running && !timers[id].done) {
+      resetInline(id);
+    }
+  });
+  toggleLangMenu();
+}
+
+function toggleLangMenu() {
+  document.getElementById('langMenu').classList.toggle('open');
+}
+
+// Close lang menu when clicking outside
+document.addEventListener('click', function(e) {
+  const switcher = document.getElementById('langSwitcher');
+  if (!switcher.contains(e.target)) {
+    document.getElementById('langMenu').classList.remove('open');
+  }
+});
+
 /* ═══ ICON SYSTEM ═══ */
 const ICO = {
   home: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>',
@@ -811,9 +1167,9 @@ function playPhaseSound(phase) {
 function classifyPhase(step) {
   if (!step) return 'idle';
   if (step.isRest) return 'rest';
-  const l = step.label.toUpperCase();
-  if (l.includes('RELACHER')) return 'release';
-  if (l.includes('MAINTENIR')) return 'hold';
+  const lk = step.labelKey;
+  if (lk === 'release') return 'release';
+  if (lk === 'holdMax') return 'hold';
   return 'contract';
 }
 
@@ -854,93 +1210,119 @@ function switchProgramme(progId) {
 
 /*
  * ═══════════════════════════════════════════════════
- *  INLINE TIMER ENGINE (unchanged)
+ *  INLINE TIMER ENGINE
  * ═══════════════════════════════════════════════════
  */
+
+/* Phase label translation helper */
+function phaseLabel(labelKey) {
+  if (T[curLang] && T[curLang].phase && T[curLang].phase[labelKey] !== undefined) {
+    return T[curLang].phase[labelKey];
+  }
+  return labelKey;
+}
+
+/* Exercise name translation helper */
+const exoNameKeyMap = {
+  'Slow contractions': 'exoNameSlowContractions',
+  'Fast contractions': 'exoNameFastContractions',
+  'Staircase contraction': 'exoNameStaircase',
+  'Fast pulses': 'exoNameFastPulses',
+  'Long hold': 'exoNameLongHold',
+  'Express pulses': 'exoNameExpressPulses',
+  'Reverse staircase': 'exoNameReverseStaircase'
+};
+
+function exoName(name) {
+  const key = exoNameKeyMap[name];
+  if (key && T[curLang] && T[curLang][key]) return T[curLang][key];
+  return name;
+}
+
 const programmes = {
   s12: {
     color: 'var(--accent)',
     exercises: [
-      { name: 'Contractions lentes', sets: 3, reps: 10, restBetweenSets: 30,
+      { name: 'Slow contractions', sets: 3, reps: 10, restBetweenSets: 30,
         phases: [
-          { label: 'CONTRACTER', icon: ICO.chevUp, color: 'var(--accent)', dur: 3 },
-          { label: 'RELACHER',   icon: ICO.chevDown, color: 'var(--warm)',   dur: 3 }
+          { labelKey: 'contract', icon: ICO.chevUp, color: 'var(--accent)', dur: 3 },
+          { labelKey: 'release',  icon: ICO.chevDown, color: 'var(--warm)',   dur: 3 }
         ]},
-      { name: 'Contractions rapides', sets: 2, reps: 10, restBetweenSets: 30,
+      { name: 'Fast contractions', sets: 2, reps: 10, restBetweenSets: 30,
         phases: [
-          { label: 'CONTRACTER', icon: ICO.chevUp, color: 'var(--accent)', dur: 1 },
-          { label: 'RELACHER',   icon: ICO.chevDown, color: 'var(--warm)',   dur: 1 }
+          { labelKey: 'contract', icon: ICO.chevUp, color: 'var(--accent)', dur: 1 },
+          { labelKey: 'release',  icon: ICO.chevDown, color: 'var(--warm)',   dur: 1 }
         ]}
     ]
   },
   s34: {
     color: 'var(--accent-2)',
     exercises: [
-      { name: 'Contractions lentes', sets: 3, reps: 10, restBetweenSets: 30,
+      { name: 'Slow contractions', sets: 3, reps: 10, restBetweenSets: 30,
         phases: [
-          { label: 'CONTRACTER', icon: ICO.chevUp, color: 'var(--accent-2)', dur: 5 },
-          { label: 'RELACHER',   icon: ICO.chevDown, color: 'var(--warm)',     dur: 5 }
+          { labelKey: 'contract', icon: ICO.chevUp, color: 'var(--accent-2)', dur: 5 },
+          { labelKey: 'release',  icon: ICO.chevDown, color: 'var(--warm)',     dur: 5 }
         ]},
-      { name: 'Contractions rapides', sets: 3, reps: 15, restBetweenSets: 30,
+      { name: 'Fast contractions', sets: 3, reps: 15, restBetweenSets: 30,
         phases: [
-          { label: 'CONTRACTER', icon: ICO.chevUp, color: 'var(--accent-2)', dur: 1 },
-          { label: 'RELACHER',   icon: ICO.chevDown, color: 'var(--warm)',     dur: 1 }
+          { labelKey: 'contract', icon: ICO.chevUp, color: 'var(--accent-2)', dur: 1 },
+          { labelKey: 'release',  icon: ICO.chevDown, color: 'var(--warm)',     dur: 1 }
         ]},
-      { name: 'Contraction escalier', sets: 2, reps: 5, restBetweenSets: 30,
+      { name: 'Staircase contraction', sets: 2, reps: 5, restBetweenSets: 30,
         phases: [
-          { label: '25 %', icon: ICO.step, color: '#7c5cfc', dur: 2 },
-          { label: '50 %', icon: ICO.step, color: '#8f72ff', dur: 2 },
-          { label: '75 %', icon: ICO.step, color: '#a78bff', dur: 2 },
-          { label: '100 % MAX', icon: ICO.chevUp, color: 'var(--accent-2)', dur: 2 },
-          { label: 'RELACHER', icon: ICO.chevDown, color: 'var(--warm)', dur: 5 }
+          { labelKey: 'pct25', icon: ICO.step, color: '#7c5cfc', dur: 2 },
+          { labelKey: 'pct50', icon: ICO.step, color: '#8f72ff', dur: 2 },
+          { labelKey: 'pct75', icon: ICO.step, color: '#a78bff', dur: 2 },
+          { labelKey: 'pct100', icon: ICO.chevUp, color: 'var(--accent-2)', dur: 2 },
+          { labelKey: 'release', icon: ICO.chevDown, color: 'var(--warm)', dur: 5 }
         ]}
     ]
   },
   s56: {
     color: 'var(--warm)',
     exercises: [
-      { name: 'Contractions lentes', sets: 3, reps: 10, restBetweenSets: 30,
+      { name: 'Slow contractions', sets: 3, reps: 10, restBetweenSets: 30,
         phases: [
-          { label: 'CONTRACTER', icon: ICO.chevUp, color: 'var(--warm)', dur: 8 },
-          { label: 'RELACHER',   icon: ICO.chevDown, color: 'var(--text-dim)', dur: 5 }
+          { labelKey: 'contract', icon: ICO.chevUp, color: 'var(--warm)', dur: 8 },
+          { labelKey: 'release',  icon: ICO.chevDown, color: 'var(--text-dim)', dur: 5 }
         ]},
-      { name: 'Pulsations rapides', sets: 3, reps: 20, restBetweenSets: 30,
+      { name: 'Fast pulses', sets: 3, reps: 20, restBetweenSets: 30,
         phases: [
-          { label: 'CONTRACTER', icon: ICO.chevUp, color: 'var(--warm)', dur: 1 },
-          { label: 'RELACHER',   icon: ICO.chevDown, color: 'var(--text-dim)', dur: 1 }
+          { labelKey: 'contract', icon: ICO.chevUp, color: 'var(--warm)', dur: 1 },
+          { labelKey: 'release',  icon: ICO.chevDown, color: 'var(--text-dim)', dur: 1 }
         ]},
-      { name: 'Maintien long', sets: 1, reps: 3, restBetweenSets: 0,
+      { name: 'Long hold', sets: 1, reps: 3, restBetweenSets: 0,
         phases: [
-          { label: 'MAINTENIR MAX', icon: ICO.hold, color: 'var(--warm)', dur: 15 },
-          { label: 'RELACHER',      icon: ICO.chevDown, color: 'var(--text-dim)', dur: 10 }
+          { labelKey: 'holdMax', icon: ICO.hold, color: 'var(--warm)', dur: 15 },
+          { labelKey: 'release', icon: ICO.chevDown, color: 'var(--text-dim)', dur: 10 }
         ]}
     ]
   },
   s78: {
     color: 'var(--accent-3)',
     exercises: [
-      { name: 'Contractions lentes', sets: 3, reps: 12, restBetweenSets: 30,
+      { name: 'Slow contractions', sets: 3, reps: 12, restBetweenSets: 30,
         phases: [
-          { label: 'CONTRACTER', icon: ICO.chevUp, color: 'var(--accent-3)', dur: 10 },
-          { label: 'RELACHER',   icon: ICO.chevDown, color: 'var(--text-dim)', dur: 5 }
+          { labelKey: 'contract', icon: ICO.chevUp, color: 'var(--accent-3)', dur: 10 },
+          { labelKey: 'release',  icon: ICO.chevDown, color: 'var(--text-dim)', dur: 5 }
         ]},
-      { name: 'Pulsations express', sets: 3, reps: 30, restBetweenSets: 30,
+      { name: 'Express pulses', sets: 3, reps: 30, restBetweenSets: 30,
         phases: [
-          { label: 'CONTRACTER', icon: ICO.chevUp, color: 'var(--accent-3)', dur: 1 },
-          { label: 'RELACHER',   icon: ICO.chevDown, color: 'var(--text-dim)', dur: 1 }
+          { labelKey: 'contract', icon: ICO.chevUp, color: 'var(--accent-3)', dur: 1 },
+          { labelKey: 'release',  icon: ICO.chevDown, color: 'var(--text-dim)', dur: 1 }
         ]},
-      { name: 'Maintien long', sets: 1, reps: 5, restBetweenSets: 0,
+      { name: 'Long hold', sets: 1, reps: 5, restBetweenSets: 0,
         phases: [
-          { label: 'MAINTENIR MAX', icon: ICO.hold, color: 'var(--accent-3)', dur: 20 },
-          { label: 'RELACHER',      icon: ICO.chevDown, color: 'var(--text-dim)', dur: 10 }
+          { labelKey: 'holdMax', icon: ICO.hold, color: 'var(--accent-3)', dur: 20 },
+          { labelKey: 'release', icon: ICO.chevDown, color: 'var(--text-dim)', dur: 10 }
         ]},
-      { name: 'Escalier inverse', sets: 2, reps: 5, restBetweenSets: 30,
+      { name: 'Reverse staircase', sets: 2, reps: 5, restBetweenSets: 30,
         phases: [
-          { label: '100 % MAX', icon: ICO.chevUp, color: 'var(--accent-3)', dur: 2 },
-          { label: '75 %', icon: ICO.step, color: '#ff8a8a', dur: 2 },
-          { label: '50 %', icon: ICO.step, color: '#ffaaaa', dur: 2 },
-          { label: '25 %', icon: ICO.step, color: '#ffcccc', dur: 2 },
-          { label: 'RELACHER', icon: ICO.chevDown, color: 'var(--text-dim)', dur: 5 }
+          { labelKey: 'pct100', icon: ICO.chevUp, color: 'var(--accent-3)', dur: 2 },
+          { labelKey: 'pct75', icon: ICO.step, color: '#ff8a8a', dur: 2 },
+          { labelKey: 'pct50', icon: ICO.step, color: '#ffaaaa', dur: 2 },
+          { labelKey: 'pct25', icon: ICO.step, color: '#ffcccc', dur: 2 },
+          { labelKey: 'release', icon: ICO.chevDown, color: 'var(--text-dim)', dur: 5 }
         ]}
     ]
   }
@@ -952,12 +1334,12 @@ function buildSequence(id) {
     for (let s = 0; s < exo.sets; s++) {
       for (let r = 0; r < exo.reps; r++) {
         exo.phases.forEach(ph => {
-          seq.push({ label: ph.label, icon: ph.icon, color: ph.color, dur: ph.dur,
+          seq.push({ labelKey: ph.labelKey, icon: ph.icon, color: ph.color, dur: ph.dur,
             ei, exoName: exo.name, sn: s+1, ts: exo.sets, rn: r+1, tr: exo.reps, isRest: false });
         });
       }
       if (exo.restBetweenSets > 0 && s < exo.sets - 1) {
-        seq.push({ label: 'REPOS', icon: ICO.breathe, color: 'var(--text-dim)', dur: exo.restBetweenSets,
+        seq.push({ labelKey: 'rest', icon: ICO.breathe, color: 'var(--text-dim)', dur: exo.restBetweenSets,
           ei, exoName: exo.name, sn: s+1, ts: exo.sets, rn: 0, tr: exo.reps, isRest: true });
       }
     }
@@ -981,7 +1363,7 @@ function renderDots(id) {
   programmes[id].exercises.forEach((exo, i) => {
     const d = document.createElement('div');
     d.className = 'it-exo-dot';
-    d.title = exo.name;
+    d.title = exoName(exo.name);
     if (st.done || (st.cur < st.seq.length && st.seq[st.cur].ei > i)) d.classList.add('done');
     else if (!st.done && st.cur < st.seq.length && st.seq[st.cur].ei === i) d.classList.add('current');
     el.appendChild(d);
@@ -1031,8 +1413,8 @@ function updateUI(id) {
   const dispEl = document.getElementById('display-' + id);
   const metaEl = document.getElementById('meta-' + id);
   if (st.done) {
-    exoEl.innerHTML = ICO.celebrate + ' Seance terminee !';
-    phaseEl.textContent = 'Bravo, programme complet.';
+    exoEl.innerHTML = ICO.celebrate + ' ' + T[curLang].sessionDone;
+    phaseEl.textContent = T[curLang].programmeDone;
     phaseEl.style.color = programmes[id].color;
     dispEl.innerHTML = ICO.check;
     dispEl.style.color = programmes[id].color;
@@ -1041,15 +1423,17 @@ function updateUI(id) {
     return;
   }
   const s = st.seq[st.cur];
-  exoEl.textContent = s.exoName;
-  phaseEl.innerHTML = s.icon + ' ' + s.label;
+  exoEl.textContent = exoName(s.exoName);
+  phaseEl.innerHTML = s.icon + ' ' + phaseLabel(s.labelKey);
   phaseEl.style.color = s.color;
   const m = Math.floor(st.sec / 60);
   dispEl.textContent = m + ':' + String(st.sec % 60).padStart(2, '0');
   dispEl.style.color = s.color;
-  metaEl.textContent = s.isRest
-    ? 'Repos — prochaine serie ' + (s.sn + 1) + '/' + s.ts
-    : 'Serie ' + s.sn + '/' + s.ts + ' — Rep. ' + s.rn + '/' + s.tr;
+  if (s.isRest) {
+    metaEl.textContent = T[curLang].metaRest.replace('{sn}', s.sn + 1).replace('{ts}', s.ts);
+  } else {
+    metaEl.textContent = T[curLang].metaSet.replace('{sn}', s.sn).replace('{ts}', s.ts).replace('{rn}', s.rn).replace('{tr}', s.tr);
+  }
   renderDots(id); updateRing(id, st);
 }
 
@@ -1069,7 +1453,7 @@ function tick(id) {
     if (st.cur >= st.seq.length) {
       st.done = true; st.running = false;
       clearInterval(st.interval);
-      document.getElementById('btn-' + id).innerHTML = ico('play',14) + ' Recommencer';
+      document.getElementById('btn-' + id).innerHTML = ico('play',14) + ' ' + T[curLang].btnRestart;
       document.getElementById('timer-' + id).classList.remove('active');
       if ('vibrate' in navigator && !audioMuted) navigator.vibrate([200, 100, 200]);
       playPhaseSound('done');
@@ -1096,7 +1480,7 @@ function startCountdown(id, callback) {
   timerEl.classList.add('active');
   timerEl.dataset.phase = 'countdown';
   timerEl.style.setProperty('--phase-color', programmes[id].color);
-  phaseEl.textContent = 'Preparez-vous...';
+  phaseEl.textContent = T[curLang].countdown;
   phaseEl.style.color = programmes[id].color;
   let count = 3;
   dispEl.textContent = count;
@@ -1106,7 +1490,7 @@ function startCountdown(id, callback) {
     count--;
     if (count <= 0) {
       clearInterval(cdInterval);
-      dispEl.textContent = 'GO!';
+      dispEl.textContent = T[curLang].countdownGo;
       if (ringIcon) ringIcon.innerHTML = ICO.muscle;
       playTone(660, 0.15);
       setTimeout(callback, 400);
@@ -1127,7 +1511,7 @@ function toggleInline(id) {
   if (st.running) {
     st.running = false;
     clearInterval(st.interval);
-    document.getElementById('btn-' + id).innerHTML = ico('play',14) + ' Reprendre';
+    document.getElementById('btn-' + id).innerHTML = ico('play',14) + ' ' + T[curLang].btnResume;
     document.getElementById('timer-' + id).classList.remove('active');
     releaseWakeLock();
   } else {
@@ -1137,7 +1521,7 @@ function toggleInline(id) {
       startCountdown(id, () => {
         st.running = true;
         st.prevPhase = classifyPhase(st.seq[0]);
-        document.getElementById('btn-' + id).innerHTML = ico('pause',14) + ' Pause';
+        document.getElementById('btn-' + id).innerHTML = ico('pause',14) + ' ' + T[curLang].btnPause;
         document.getElementById('timer-' + id).classList.add('active');
         playPhaseSound(st.prevPhase);
         updateUI(id);
@@ -1146,7 +1530,7 @@ function toggleInline(id) {
       });
     } else {
       st.running = true;
-      document.getElementById('btn-' + id).innerHTML = ico('pause',14) + ' Pause';
+      document.getElementById('btn-' + id).innerHTML = ico('pause',14) + ' ' + T[curLang].btnPause;
       document.getElementById('timer-' + id).classList.add('active');
       updateUI(id);
       st.interval = setInterval(() => tick(id), 1000);
@@ -1162,13 +1546,13 @@ function resetInline(id) {
   timerEl.dataset.phase = 'idle';
   timerEl.style.removeProperty('--phase-color');
   timerEl.classList.remove('active', 'phase-flash');
-  document.getElementById('btn-' + id).innerHTML = ico('play',14) + ' Demarrer';
-  document.getElementById('exo-' + id).textContent = 'Pret a demarrer';
-  document.getElementById('phase-' + id).textContent = '—';
+  document.getElementById('btn-' + id).innerHTML = ico('play',14) + ' ' + T[curLang].btnStart;
+  document.getElementById('exo-' + id).textContent = T[curLang].ready;
+  document.getElementById('phase-' + id).textContent = '\u2014';
   document.getElementById('phase-' + id).style.color = '';
   document.getElementById('display-' + id).textContent = '0:00';
   document.getElementById('display-' + id).style.color = programmes[id].color;
-  document.getElementById('meta-' + id).textContent = '—';
+  document.getElementById('meta-' + id).textContent = '\u2014';
   const progressCircle = document.querySelector('#ring-' + id + ' .ring-progress');
   if (progressCircle) { progressCircle.style.strokeDashoffset = String(CIRCUMFERENCE); progressCircle.style.stroke = 'transparent'; }
   const ringIcon = document.getElementById('ring-icon-' + id);
@@ -1184,7 +1568,7 @@ document.addEventListener('visibilitychange', () => {
         timers[id]._pausedByVisibility = true;
         timers[id].running = false;
         clearInterval(timers[id].interval);
-        document.getElementById('btn-' + id).innerHTML = ico('play',14) + ' Reprendre';
+        document.getElementById('btn-' + id).innerHTML = ico('play',14) + ' ' + T[curLang].btnResume;
         document.getElementById('timer-' + id).classList.remove('active');
       }
     });
@@ -1194,7 +1578,7 @@ document.addEventListener('visibilitychange', () => {
       if (timers[id] && timers[id]._pausedByVisibility) {
         timers[id]._pausedByVisibility = false;
         timers[id].running = true;
-        document.getElementById('btn-' + id).innerHTML = ico('pause',14) + ' Pause';
+        document.getElementById('btn-' + id).innerHTML = ico('pause',14) + ' ' + T[curLang].btnPause;
         document.getElementById('timer-' + id).classList.add('active');
         timers[id].interval = setInterval(() => tick(id), 1000);
         updateUI(id);
@@ -1206,6 +1590,10 @@ document.addEventListener('visibilitychange', () => {
 
 /* ═══ Init ═══ */
 document.addEventListener('DOMContentLoaded', () => {
+  // Apply saved language or default to English
+  const savedLang = localStorage.getItem('kegod-lang') || 'en';
+  applyLang(savedLang);
+
   ['s12','s34','s56','s78'].forEach(id => {
     timers[id] = freshState(id);
     renderDots(id);
