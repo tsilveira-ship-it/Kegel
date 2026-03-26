@@ -565,6 +565,39 @@
   /* ═══ STREAK WARNING ═══ */
   .streak-warning { background:var(--warm); color:var(--bg); padding:12px 16px; border-radius:var(--radius-sm); margin:16px 24px; font-size:0.85rem; font-weight:600; text-align:center; animation:warningPulse 2s infinite; cursor:pointer; }
   @keyframes warningPulse { 0%,100% { box-shadow:0 0 0 0 rgba(251,191,36,0.4); } 50% { box-shadow:0 0 0 8px rgba(251,191,36,0); } }
+
+  /* ═══ SPRINT 3: ANATOMY SVG ═══ */
+  .anatomy-muscle { fill: var(--phase-color, var(--accent)); fill-opacity:0; transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); transform-origin: 60px 60px; }
+  .inline-timer.active .anatomy-muscle { fill-opacity: 0.25; }
+  .inline-timer[data-phase="contract"] .anatomy-muscle.muscle-left { transform: translate(6px, 4px) rotate(90deg); }
+  .inline-timer[data-phase="contract"] .anatomy-muscle.muscle-right { transform: translate(-6px, 4px) rotate(90deg); }
+  .inline-timer[data-phase="hold"] .anatomy-muscle.muscle-left { transform: translate(6px, 4px) rotate(90deg); }
+  .inline-timer[data-phase="hold"] .anatomy-muscle.muscle-right { transform: translate(-6px, 4px) rotate(90deg); }
+  .inline-timer[data-phase="release"] .anatomy-muscle.muscle-left { transform: translate(-4px, -2px) rotate(90deg); }
+  .inline-timer[data-phase="release"] .anatomy-muscle.muscle-right { transform: translate(4px, -2px) rotate(90deg); }
+  .inline-timer[data-phase="rest"] .anatomy-muscle.muscle-left { animation: anatomy-breathe-left 3s ease-in-out infinite; }
+  .inline-timer[data-phase="rest"] .anatomy-muscle.muscle-right { animation: anatomy-breathe-right 3s ease-in-out infinite; }
+  .inline-timer[data-phase="idle"] .anatomy-muscle,
+  .inline-timer[data-phase="countdown"] .anatomy-muscle,
+  .inline-timer[data-phase="done"] .anatomy-muscle { fill-opacity: 0; }
+  @keyframes anatomy-breathe-left { 0%,100% { transform: translate(-2px, 0) rotate(90deg); } 50% { transform: translate(-4px, -1px) rotate(90deg); } }
+  @keyframes anatomy-breathe-right { 0%,100% { transform: translate(2px, 0) rotate(90deg); } 50% { transform: translate(4px, -1px) rotate(90deg); } }
+
+  /* ═══ SPRINT 3: STREAK FIRE PULSE ═══ */
+  .streak-fire.pulse { animation: streakFirePulse 1.5s ease-in-out infinite; }
+  @keyframes streakFirePulse { 0%,100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.15); filter: brightness(1.3); } }
+
+  /* ═══ SPRINT 3: HEATMAP STAGGERED FADE-IN ═══ */
+  .cal-cell.fade-in { opacity:0; animation: calCellFadeIn 0.4s ease forwards; }
+  @keyframes calCellFadeIn { from { opacity:0; transform:scale(0.8); } to { opacity:1; transform:scale(1); } }
+
+  /* ═══ SPRINT 3: COUNT-UP ANIMATION ═══ */
+  .qs-num.counting { transition: color 0.3s; }
+
+  /* ═══ SPRINT 3: SHARE/EXPORT BUTTON ═══ */
+  .share-stats-btn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:14px; margin:20px 0; background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:var(--bg); font-weight:700; font-size:0.9rem; border:none; border-radius:var(--radius-sm); cursor:pointer; transition:transform 0.15s, box-shadow 0.15s; }
+  .share-stats-btn:active { transform:scale(0.97); }
+  .share-stats-btn svg { flex-shrink:0; }
 </style>
 </head>
 <body>
@@ -723,7 +756,7 @@
         <div class="it-exo-name" id="exo-s12" data-i18n="ready">Ready to start</div>
         <div class="it-phase" id="phase-s12">—</div>
         <div class="it-coaching" id="coaching-s12"></div>
-        <div class="kegel-ring" id="ring-s12"><svg class="ring-svg" viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"/><circle class="ring-progress" cx="60" cy="60" r="50"/><circle class="ring-core" cx="60" cy="60" r="30"/></svg><div class="ring-icon" id="ring-icon-s12"></div></div>
+        <div class="kegel-ring" id="ring-s12"><svg class="ring-svg" viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"/><circle class="ring-progress" cx="60" cy="60" r="50"/><circle class="ring-core" cx="60" cy="60" r="30"/><path class="anatomy-muscle muscle-left" d="M44,52 Q48,60 44,70 Q50,66 54,60 Q50,54 44,52Z"/><path class="anatomy-muscle muscle-right" d="M76,52 Q72,60 76,70 Q70,66 66,60 Q70,54 76,52Z"/></svg><div class="ring-icon" id="ring-icon-s12"></div></div>
         <div class="it-display" id="display-s12" style="color:var(--accent);">0:00</div>
         <div class="it-meta" id="meta-s12">—</div>
         <div class="it-controls">
@@ -753,7 +786,7 @@
         <div class="it-exo-name" id="exo-s34" data-i18n="ready">Ready to start</div>
         <div class="it-phase" id="phase-s34">—</div>
         <div class="it-coaching" id="coaching-s34"></div>
-        <div class="kegel-ring" id="ring-s34"><svg class="ring-svg" viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"/><circle class="ring-progress" cx="60" cy="60" r="50"/><circle class="ring-core" cx="60" cy="60" r="30"/></svg><div class="ring-icon" id="ring-icon-s34"></div></div>
+        <div class="kegel-ring" id="ring-s34"><svg class="ring-svg" viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"/><circle class="ring-progress" cx="60" cy="60" r="50"/><circle class="ring-core" cx="60" cy="60" r="30"/><path class="anatomy-muscle muscle-left" d="M44,52 Q48,60 44,70 Q50,66 54,60 Q50,54 44,52Z"/><path class="anatomy-muscle muscle-right" d="M76,52 Q72,60 76,70 Q70,66 66,60 Q70,54 76,52Z"/></svg><div class="ring-icon" id="ring-icon-s34"></div></div>
         <div class="it-display" id="display-s34" style="color:var(--accent-2);">0:00</div>
         <div class="it-meta" id="meta-s34">—</div>
         <div class="it-controls">
@@ -783,7 +816,7 @@
         <div class="it-exo-name" id="exo-s56" data-i18n="ready">Ready to start</div>
         <div class="it-phase" id="phase-s56">—</div>
         <div class="it-coaching" id="coaching-s56"></div>
-        <div class="kegel-ring" id="ring-s56"><svg class="ring-svg" viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"/><circle class="ring-progress" cx="60" cy="60" r="50"/><circle class="ring-core" cx="60" cy="60" r="30"/></svg><div class="ring-icon" id="ring-icon-s56"></div></div>
+        <div class="kegel-ring" id="ring-s56"><svg class="ring-svg" viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"/><circle class="ring-progress" cx="60" cy="60" r="50"/><circle class="ring-core" cx="60" cy="60" r="30"/><path class="anatomy-muscle muscle-left" d="M44,52 Q48,60 44,70 Q50,66 54,60 Q50,54 44,52Z"/><path class="anatomy-muscle muscle-right" d="M76,52 Q72,60 76,70 Q70,66 66,60 Q70,54 76,52Z"/></svg><div class="ring-icon" id="ring-icon-s56"></div></div>
         <div class="it-display" id="display-s56" style="color:var(--warm);">0:00</div>
         <div class="it-meta" id="meta-s56">—</div>
         <div class="it-controls">
@@ -814,7 +847,7 @@
         <div class="it-exo-name" id="exo-s78" data-i18n="ready">Ready to start</div>
         <div class="it-phase" id="phase-s78">—</div>
         <div class="it-coaching" id="coaching-s78"></div>
-        <div class="kegel-ring" id="ring-s78"><svg class="ring-svg" viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"/><circle class="ring-progress" cx="60" cy="60" r="50"/><circle class="ring-core" cx="60" cy="60" r="30"/></svg><div class="ring-icon" id="ring-icon-s78"></div></div>
+        <div class="kegel-ring" id="ring-s78"><svg class="ring-svg" viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"/><circle class="ring-progress" cx="60" cy="60" r="50"/><circle class="ring-core" cx="60" cy="60" r="30"/><path class="anatomy-muscle muscle-left" d="M44,52 Q48,60 44,70 Q50,66 54,60 Q50,54 44,52Z"/><path class="anatomy-muscle muscle-right" d="M76,52 Q72,60 76,70 Q70,66 66,60 Q70,54 76,52Z"/></svg><div class="ring-icon" id="ring-icon-s78"></div></div>
         <div class="it-display" id="display-s78" style="color:var(--accent-3);">0:00</div>
         <div class="it-meta" id="meta-s78">—</div>
         <div class="it-controls">
@@ -940,6 +973,12 @@
     <!-- Badges -->
     <div class="section-label"><span class="line"></span><span data-i18n="badgesLabel">Badges</span></div>
     <div class="badges-grid" id="badgesGrid"></div>
+
+    <!-- Share/Export -->
+    <button class="share-stats-btn" onclick="shareStats()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      <span data-i18n="shareStats">Share my progress</span>
+    </button>
   </div>
 </div>
 
@@ -1072,7 +1111,11 @@ const T = {
     },
     onbWelcome: 'Welcome to KEGOD', onbSubtitle: 'The #1 men\'s Kegel training app', onbWhat: 'What is Kegel?', onbWhatDesc: 'Strengthen your pelvic floor to improve urinary control, sexual performance and core stability.', onbHow: 'How it works', onbHowDesc: '3 sessions per day, 5 minutes each. We track your progress and streaks.', onbNext: 'Next', onbStart: 'Start Training!',
     sessionComplete: 'Session complete!', close: 'Close', programme: 'Programme', duration: 'Duration', exercises: 'Exercises',
-    streakWarning: 'Your {n}-day streak is at risk! Train now.'
+    streakWarning: 'Your {n}-day streak is at risk! Train now.',
+    shareStats: 'Share my progress',
+    shareTitle: 'My KEGOD Progress',
+    shareGenerated: 'Generated with KEGOD',
+    restTips: ['Stay hydrated between sets', 'Good posture = better results', 'Breathe deeply through your belly', 'The release is as important as the squeeze', 'Relax your jaw and shoulders', 'You are building real strength']
   },
   fr: {
     badge: "PROGRAMME HOMME",
@@ -1176,7 +1219,11 @@ const T = {
     },
     onbWelcome: 'Bienvenue sur KEGOD', onbSubtitle: 'L\'app #1 d\'entrainement Kegel homme', onbWhat: 'Qu\'est-ce que le Kegel ?', onbWhatDesc: 'Renforcez votre plancher pelvien pour ameliorer le controle urinaire, la performance sexuelle et la stabilite du core.', onbHow: 'Comment ca marche', onbHowDesc: '3 seances par jour, 5 minutes chacune. On suit vos progres et votre serie.', onbNext: 'Suivant', onbStart: 'Commencer !',
     sessionComplete: 'Seance terminee !', close: 'Fermer', programme: 'Programme', duration: 'Duree', exercises: 'Exercices',
-    streakWarning: 'Votre serie de {n} jours est en danger ! Entrainez-vous maintenant.'
+    streakWarning: 'Votre serie de {n} jours est en danger ! Entrainez-vous maintenant.',
+    shareStats: 'Partager mes progres',
+    shareTitle: 'Mes progres KEGOD',
+    shareGenerated: 'Genere avec KEGOD',
+    restTips: ['Restez hydrate entre les series', 'Bonne posture = meilleurs resultats', 'Respirez profondement par le ventre', 'Le relachement est aussi important que la contraction', 'Detendez la machoire et les epaules', 'Vous construisez une vraie force']
   },
   pt: {
     badge: "PROGRAMA MASCULINO",
@@ -1280,7 +1327,11 @@ const T = {
     },
     onbWelcome: 'Bem-vindo ao KEGOD', onbSubtitle: 'O app #1 de treino Kegel masculino', onbWhat: 'O que e Kegel?', onbWhatDesc: 'Fortale\u00e7a seu assoalho pelvico para melhorar o controle urinario, desempenho sexual e estabilidade do core.', onbHow: 'Como funciona', onbHowDesc: '3 sessoes por dia, 5 minutos cada. Acompanhamos seu progresso e sequencia.', onbNext: 'Proximo', onbStart: 'Comecar!',
     sessionComplete: 'Sessao concluida!', close: 'Fechar', programme: 'Programa', duration: 'Duracao', exercises: 'Exercicios',
-    streakWarning: 'Sua sequencia de {n} dias esta em risco! Treine agora.'
+    streakWarning: 'Sua sequencia de {n} dias esta em risco! Treine agora.',
+    shareStats: 'Compartilhar meu progresso',
+    shareTitle: 'Meu progresso KEGOD',
+    shareGenerated: 'Gerado com KEGOD',
+    restTips: ['Mantenha-se hidratado entre as series', 'Boa postura = melhores resultados', 'Respire profundamente pela barriga', 'O relaxamento e tao importante quanto a contracao', 'Relaxe a mandibula e os ombros', 'Voce esta construindo forca real']
   },
   es: {
     badge: "PROGRAMA MASCULINO",
@@ -1384,7 +1435,11 @@ const T = {
     },
     onbWelcome: 'Bienvenido a KEGOD', onbSubtitle: 'La app #1 de entrenamiento Kegel masculino', onbWhat: 'Que es Kegel?', onbWhatDesc: 'Fortalece tu suelo pelvico para mejorar el control urinario, rendimiento sexual y estabilidad del core.', onbHow: 'Como funciona', onbHowDesc: '3 sesiones al dia, 5 minutos cada una. Seguimos tu progreso y racha.', onbNext: 'Siguiente', onbStart: 'Empezar!',
     sessionComplete: 'Sesion completada!', close: 'Cerrar', programme: 'Programa', duration: 'Duracion', exercises: 'Ejercicios',
-    streakWarning: 'Tu racha de {n} dias esta en riesgo! Entrena ahora.'
+    streakWarning: 'Tu racha de {n} dias esta en riesgo! Entrena ahora.',
+    shareStats: 'Compartir mi progreso',
+    shareTitle: 'Mi progreso KEGOD',
+    shareGenerated: 'Generado con KEGOD',
+    restTips: ['Mantente hidratado entre series', 'Buena postura = mejores resultados', 'Respira profundamente por el abdomen', 'La relajacion es tan importante como la contraccion', 'Relaja la mandibula y los hombros', 'Estas construyendo fuerza real']
   }
 };
 
@@ -1950,18 +2005,25 @@ function updateUI(id) {
   } else {
     metaEl.textContent = T[curLang].metaSet.replace('{sn}', s.sn).replace('{ts}', s.ts).replace('{rn}', s.rn).replace('{tr}', s.tr);
   }
-  // Coaching text
+  // Coaching text + rest tips
   const coachingEl = document.getElementById('coaching-' + id);
   if (coachingEl && appData.settings.coaching) {
     const phase = classifyPhase(s);
-    const msgs = T[curLang].coaching && T[curLang].coaching[phase];
-    if (msgs && msgs.length && st._coachingText) {
-      coachingEl.textContent = st._coachingText;
+    if (s.isRest && T[curLang].restTips && T[curLang].restTips.length) {
+      const tips = T[curLang].restTips;
+      if (!st._restTipIdx) st._restTipIdx = 0;
+      coachingEl.textContent = tips[st._restTipIdx % tips.length];
       coachingEl.style.opacity = '0.8';
-    } else if (msgs && msgs.length) {
-      st._coachingText = msgs[Math.floor(Math.random() * msgs.length)];
-      coachingEl.textContent = st._coachingText;
-      coachingEl.style.opacity = '0.8';
+    } else {
+      const msgs = T[curLang].coaching && T[curLang].coaching[phase];
+      if (msgs && msgs.length && st._coachingText) {
+        coachingEl.textContent = st._coachingText;
+        coachingEl.style.opacity = '0.8';
+      } else if (msgs && msgs.length) {
+        st._coachingText = msgs[Math.floor(Math.random() * msgs.length)];
+        coachingEl.textContent = st._coachingText;
+        coachingEl.style.opacity = '0.8';
+      }
     }
   } else if (coachingEl) {
     coachingEl.textContent = '';
@@ -2006,7 +2068,10 @@ function tick(id) {
       triggerPhaseFlash(id);
       playPhaseSound(newPhase);
       if ('vibrate' in navigator && !audioMuted && appData.settings.vibration) navigator.vibrate(50);
-      // Update coaching text on phase change
+      // Update coaching text on phase change + rotate rest tips
+      if (st.seq[st.cur].isRest) {
+        st._restTipIdx = (st._restTipIdx || 0) + 1;
+      }
       const msgs = T[curLang].coaching && T[curLang].coaching[newPhase];
       if (msgs && msgs.length) {
         st._coachingText = msgs[Math.floor(Math.random() * msgs.length)];
@@ -2146,27 +2211,46 @@ document.addEventListener('visibilitychange', () => {
 /* ═══ STATS RENDERING ═══ */
 let calYear, calMonth;
 
+function animateCountUp(el, target, duration) {
+  if (!target || target <= 0) { el.textContent = '0'; return; }
+  duration = duration || 800;
+  const start = performance.now();
+  el.classList.add('counting');
+  function step(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(eased * target);
+    if (progress < 1) requestAnimationFrame(step);
+    else el.classList.remove('counting');
+  }
+  requestAnimationFrame(step);
+}
+
 function renderStats() {
-  // Streak
-  document.getElementById('streakFire').innerHTML = ico('streak', 36);
+  // Streak with pulse animation
+  const streakFire = document.getElementById('streakFire');
+  streakFire.innerHTML = ico('streak', 36);
+  if (appData.streaks.current > 0) streakFire.classList.add('pulse');
+  else streakFire.classList.remove('pulse');
   document.getElementById('streakNum').textContent = appData.streaks.current;
   document.getElementById('bestStreak').textContent = appData.streaks.best;
 
-  // Quick stats
+  // Quick stats with count-up
   const totalSessions = appData.sessions.filter(s => s.completed).length;
   const totalMinutes = Math.round(appData.sessions.reduce((a, s) => a + s.duration, 0) / 60);
   const now = new Date();
   const weekAgo = new Date(now); weekAgo.setDate(weekAgo.getDate() - 7);
   const thisWeek = appData.sessions.filter(s => new Date(s.timestamp) >= weekAgo).length;
 
-  document.getElementById('qsTotalSessions').textContent = totalSessions;
-  document.getElementById('qsTotalMinutes').textContent = totalMinutes;
-  document.getElementById('qsThisWeek').textContent = thisWeek;
-  document.getElementById('qsLevel').textContent = appData.level.current;
+  animateCountUp(document.getElementById('qsTotalSessions'), totalSessions, 800);
+  animateCountUp(document.getElementById('qsTotalMinutes'), totalMinutes, 800);
+  animateCountUp(document.getElementById('qsThisWeek'), thisWeek, 600);
+  animateCountUp(document.getElementById('qsLevel'), appData.level.current, 400);
 
   // XP bar
   const pct = Math.max(10, Math.round(getXpProgress(appData.level.xp) * 100));
-  document.getElementById('xpBar').style.width = pct + '%';
+  document.getElementById('xpBar').style.width = '10%';
+  setTimeout(() => { document.getElementById('xpBar').style.width = pct + '%'; }, 100);
   const lv = appData.level.current;
   const nextXp = XP_LEVELS[lv] || (XP_LEVELS[lv-1] + 1000);
   document.getElementById('xpText').textContent = appData.level.xp + ' / ' + nextXp + ' XP';
@@ -2215,7 +2299,7 @@ function renderCalendar() {
     const cnt = counts[dateStr] || 0;
     const lvl = cnt >= 3 ? 'lv3' : cnt === 2 ? 'lv2' : cnt === 1 ? 'lv1' : '';
     const isToday = dateStr === today ? ' today' : '';
-    html += '<div class="cal-cell ' + lvl + isToday + '"><span class="cal-num">' + d + '</span></div>';
+    html += '<div class="cal-cell fade-in ' + lvl + isToday + '" style="animation-delay:' + (d * 20) + 'ms"><span class="cal-num">' + d + '</span></div>';
   }
   document.getElementById('calGrid').innerHTML = html;
 }
@@ -2365,6 +2449,117 @@ function showSessionSummary(programmeId, durationSecs, exCompleted, exTotal, new
 
 function closeSummary() {
   document.getElementById('summaryOverlay').classList.remove('active');
+}
+
+/* ═══ SHARE/EXPORT STATS ═══ */
+async function shareStats() {
+  const W = 1080, H = 1920;
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const ctx = c.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#0a0e1a';
+  ctx.fillRect(0, 0, W, H);
+
+  // Gradient accent top
+  const grad = ctx.createLinearGradient(0, 0, W, 400);
+  grad.addColorStop(0, '#00d4aa22');
+  grad.addColorStop(1, '#7c5cfc11');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, 500);
+
+  // Title
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#00d4aa';
+  ctx.font = 'bold 80px sans-serif';
+  ctx.fillText('KEGOD', W / 2, 200);
+
+  ctx.fillStyle = '#8892a8';
+  ctx.font = '36px sans-serif';
+  ctx.fillText(T[curLang].shareTitle || 'My KEGOD Progress', W / 2, 280);
+
+  // Stats cards
+  const stats = [
+    { label: T[curLang].streakDays || 'day streak', value: String(appData.streaks.current), color: '#fbbf24' },
+    { label: T[curLang].totalSessions || 'Total sessions', value: String(appData.sessions.filter(s => s.completed).length), color: '#00d4aa' },
+    { label: T[curLang].totalMinutes || 'Total minutes', value: String(Math.round(appData.sessions.reduce((a, s) => a + s.duration, 0) / 60)), color: '#7c5cfc' },
+    { label: T[curLang].levelLabel || 'Level', value: String(appData.level.current), color: '#ff6b6b' }
+  ];
+
+  const cardW = 440, cardH = 260, gap = 40, startY = 400;
+  stats.forEach((s, i) => {
+    const col = i % 2;
+    const row = Math.floor(i / 2);
+    const x = (W - cardW * 2 - gap) / 2 + col * (cardW + gap);
+    const y = startY + row * (cardH + gap);
+
+    // Card bg
+    ctx.fillStyle = '#111827';
+    ctx.beginPath();
+    ctx.roundRect(x, y, cardW, cardH, 20);
+    ctx.fill();
+
+    // Value
+    ctx.fillStyle = s.color;
+    ctx.font = 'bold 72px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(s.value, x + cardW / 2, y + 130);
+
+    // Label
+    ctx.fillStyle = '#8892a8';
+    ctx.font = '30px sans-serif';
+    ctx.fillText(s.label, x + cardW / 2, y + 190);
+  });
+
+  // Badges count
+  const badgeCount = appData.badges.length;
+  ctx.fillStyle = '#e8ecf4';
+  ctx.font = 'bold 42px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(badgeCount + '/10 ' + (T[curLang].badgesLabel || 'Badges'), W / 2, startY + 2 * (cardH + gap) + 80);
+
+  // XP bar
+  const barY = startY + 2 * (cardH + gap) + 120;
+  const barW = 800, barH = 30;
+  const barX = (W - barW) / 2;
+  ctx.fillStyle = '#1e293b';
+  ctx.beginPath(); ctx.roundRect(barX, barY, barW, barH, 15); ctx.fill();
+  const xpPct = Math.max(0.1, getXpProgress(appData.level.xp));
+  const xpGrad = ctx.createLinearGradient(barX, 0, barX + barW * xpPct, 0);
+  xpGrad.addColorStop(0, '#00d4aa'); xpGrad.addColorStop(1, '#7c5cfc');
+  ctx.fillStyle = xpGrad;
+  ctx.beginPath(); ctx.roundRect(barX, barY, barW * xpPct, barH, 15); ctx.fill();
+
+  ctx.fillStyle = '#8892a8';
+  ctx.font = '26px sans-serif';
+  ctx.fillText(appData.level.xp + ' XP', W / 2, barY + 70);
+
+  // Footer
+  ctx.fillStyle = '#555f75';
+  ctx.font = '28px sans-serif';
+  ctx.fillText(T[curLang].shareGenerated || 'Generated with KEGOD', W / 2, H - 100);
+
+  // Convert to blob and share
+  c.toBlob(async (blob) => {
+    const file = new File([blob], 'kegod-progress.png', { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: 'KEGOD', text: T[curLang].shareTitle || 'My KEGOD Progress' });
+      } catch (e) { if (e.name !== 'AbortError') downloadBlob(blob); }
+    } else {
+      downloadBlob(blob);
+    }
+  }, 'image/png');
+}
+
+function downloadBlob(blob) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'kegod-progress.png';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 /* ═══ Init ═══ */
