@@ -638,6 +638,56 @@
   .stealth-mode .it-coaching, .stealth-mode .breathing-guide { display: none; }
   .stealth-mode .lang-switcher { display: none; }
 
+  /* ═══ WAVE 4: FREEMIUM & PRICING ═══ */
+  .locked-overlay {
+    position: absolute; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    background: rgba(10, 14, 26, 0.85); backdrop-filter: blur(6px);
+    border-radius: var(--radius); cursor: pointer;
+  }
+  .locked-overlay .lock-icon { color: var(--accent-2); }
+  .locked-overlay .lock-label { font-weight: 700; font-size: 0.9rem; color: var(--text); }
+  .locked-overlay .lock-sub { font-size: 0.78rem; color: var(--text-dim); }
+  .programme-card { position: relative; }
+
+  .pricing-overlay {
+    position: fixed; inset: 0; z-index: 2002;
+    background: rgba(10, 14, 26, 0.95); display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+    padding: 24px; overflow-y: auto;
+  }
+  .pricing-overlay.active { display: flex; }
+  .pricing-card {
+    max-width: 440px; width: 100%; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 32px 24px; text-align: center;
+  }
+  .pricing-card h2 { font-family: 'Fraunces', serif; font-size: 1.6rem; margin-bottom: 4px; }
+  .pricing-card .pricing-sub { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 24px; }
+  .pricing-tier { padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 12px; text-align: left; }
+  .pricing-tier.recommended { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 5%, transparent); }
+  .pricing-tier .tier-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 2px 10px; border-radius: 100px; background: var(--accent); color: var(--bg); margin-bottom: 8px; }
+  .pricing-tier h3 { font-weight: 700; font-size: 1.1rem; margin-bottom: 4px; }
+  .pricing-tier .price { font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 800; color: var(--accent); }
+  .pricing-tier .price-note { font-size: 0.78rem; color: var(--text-muted); }
+  .pricing-tier ul { list-style: none; margin: 10px 0 0; }
+  .pricing-tier ul li { font-size: 0.85rem; color: var(--text-dim); padding: 3px 0; }
+  .pricing-tier ul li::before { content: '\2713 '; color: var(--accent); font-weight: 700; }
+  .btn-pricing {
+    display: block; width: 100%; padding: 14px; border: none; border-radius: 100px;
+    font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; margin-top: 12px; transition: all 0.2s;
+  }
+  .btn-pricing.primary { background: linear-gradient(135deg, var(--accent), #00b894); color: var(--bg); }
+  .btn-pricing.ghost { background: none; border: 1px solid var(--border); color: var(--text-dim); }
+  .btn-pricing:active { transform: scale(0.97); }
+  .pricing-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.5rem; }
+  .pricing-free-note { font-size: 0.78rem; color: var(--text-muted); margin-top: 16px; }
+
+  /* Reminder setting row */
+  .setting-time-row { display: flex; align-items: center; gap: 8px; }
+  .setting-time-row input[type="time"] { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 6px 10px; font-family: 'Outfit', sans-serif; font-size: 0.85rem; }
+
   /* ═══ WAVE 2: ASSESSMENT QUESTIONNAIRE ═══ */
   .assess-overlay {
     position: fixed; inset: 0; z-index: 2001;
@@ -748,6 +798,8 @@
     <div class="setting-row"><span data-i18n="settingVolume">Volume</span><input type="range" min="1" max="30" id="setVolume" class="range-slider" oninput="updateVolume(this.value)"></div>
     <div class="setting-divider"></div>
     <div class="setting-row"><span data-i18n="settingStealth">Stealth mode</span><label class="toggle"><input type="checkbox" id="setStealth" onchange="toggleStealth(this.checked)"><span class="toggle-slider"></span></label></div>
+    <div class="setting-divider"></div>
+    <div class="setting-row"><span data-i18n="settingReminder">Daily reminder</span><div class="setting-time-row"><input type="time" id="setReminderTime" value="09:00" onchange="updateReminder(this.value)"><label class="toggle"><input type="checkbox" id="setReminder" onchange="toggleReminder(this.checked)"><span class="toggle-slider"></span></label></div></div>
     <div class="setting-divider"></div>
     <div class="setting-row danger"><button class="btn-reset-data" onclick="resetAllData()" data-i18n="settingResetData">Reset all data</button></div>
     <div class="setting-version">KEGOD v3.0</div>
@@ -1106,6 +1158,39 @@
   </div>
 </div>
 
+<!-- Pricing Overlay -->
+<div class="pricing-overlay" id="pricingOverlay">
+  <button class="pricing-close" onclick="closePricing()">&times;</button>
+  <div class="pricing-card">
+    <h2 data-i18n="pricingTitle">Unlock KEGOD Pro</h2>
+    <div class="pricing-sub" data-i18n="pricingSub">Full access to all programmes forever.</div>
+    <div class="pricing-tier recommended">
+      <div class="tier-badge" data-i18n="pricingBest">Best value</div>
+      <h3 data-i18n="pricingLifetime">Lifetime Access</h3>
+      <div class="price" id="pricingAmount">$9.99</div>
+      <div class="price-note" data-i18n="pricingOnce">One-time payment. No subscription.</div>
+      <ul>
+        <li data-i18n="pricingFeat1">All 4 strength programmes</li>
+        <li data-i18n="pricingFeat2">Reverse Kegel relaxation</li>
+        <li data-i18n="pricingFeat3">Advanced haptic biofeedback</li>
+        <li data-i18n="pricingFeat4">Accelerometer breathing monitor</li>
+        <li data-i18n="pricingFeat5">Priority future updates</li>
+      </ul>
+      <button class="btn-pricing primary" onclick="unlockPro()" data-i18n="pricingBuy">Get Lifetime Access</button>
+    </div>
+    <div class="pricing-tier">
+      <h3 data-i18n="pricingFree">Free Plan</h3>
+      <ul>
+        <li data-i18n="pricingFreeFeat1">S1-2 Foundation programme</li>
+        <li data-i18n="pricingFreeFeat2">Reverse Kegel relaxation</li>
+        <li data-i18n="pricingFreeFeat3">Stats & streaks</li>
+      </ul>
+      <button class="btn-pricing ghost" onclick="closePricing()" data-i18n="pricingContinueFree">Continue Free</button>
+    </div>
+    <div class="pricing-free-note" data-i18n="pricingNote">7-day free trial of all features included.</div>
+  </div>
+</div>
+
 <!-- ═══ TAB BAR ═══ -->
 <nav class="tab-bar" role="tablist">
   <button class="tab-btn active" id="tab-accueil" role="tab" aria-selected="true" onclick="switchTab('accueil')">
@@ -1267,7 +1352,17 @@ const T = {
     assessStart: "Let's go!", assessSkip: 'Skip',
     // Wave 3
     settingStealth: 'Stealth mode',
-    accelLabel: 'Breathing sensor', accelAlert: "Breathe! Don't hold your breath.", accelToggle: 'Belly sensor'
+    accelLabel: 'Breathing sensor', accelAlert: "Breathe! Don't hold your breath.", accelToggle: 'Belly sensor',
+    // Wave 4
+    proBadge: 'KEGOD Pro', proUnlock: 'Tap to unlock',
+    pricingTitle: 'Unlock KEGOD Pro', pricingSub: 'Full access to all programmes forever.',
+    pricingBest: 'Best value', pricingLifetime: 'Lifetime Access', pricingOnce: 'One-time payment. No subscription.',
+    pricingFeat1: 'All 4 strength programmes', pricingFeat2: 'Reverse Kegel relaxation',
+    pricingFeat3: 'Advanced haptic biofeedback', pricingFeat4: 'Accelerometer breathing monitor', pricingFeat5: 'Priority future updates',
+    pricingFree: 'Free Plan', pricingFreeFeat1: 'S1-2 Foundation programme', pricingFreeFeat2: 'Reverse Kegel relaxation', pricingFreeFeat3: 'Stats & streaks',
+    pricingBuy: 'Get Lifetime Access', pricingContinueFree: 'Continue Free',
+    pricingNote: '7-day free trial of all features included.',
+    settingReminder: 'Daily reminder', reminderBody: 'Time for your daily Kegel training!'
   },
   fr: {
     badge: "PROGRAMME HOMME",
@@ -1400,7 +1495,16 @@ const T = {
     assessTrackStrengthen: 'Parcours renforcement', assessTrackRelax: 'Parcours relaxation', assessTrackBoth: 'Les deux parcours',
     assessStart: 'C\'est parti !', assessSkip: 'Passer',
     settingStealth: 'Mode discret',
-    accelLabel: 'Capteur respiratoire', accelAlert: 'Respirez ! Ne retenez pas votre souffle.', accelToggle: 'Capteur ventral'
+    accelLabel: 'Capteur respiratoire', accelAlert: 'Respirez ! Ne retenez pas votre souffle.', accelToggle: 'Capteur ventral',
+    proBadge: 'KEGOD Pro', proUnlock: 'Appuyez pour debloquer',
+    pricingTitle: 'Debloquer KEGOD Pro', pricingSub: 'Acces complet a tous les programmes pour toujours.',
+    pricingBest: 'Meilleur choix', pricingLifetime: 'Acces a vie', pricingOnce: 'Paiement unique. Pas d\'abonnement.',
+    pricingFeat1: 'Les 4 programmes de renforcement', pricingFeat2: 'Kegel inverse relaxation',
+    pricingFeat3: 'Biofeedback haptique avance', pricingFeat4: 'Capteur respiratoire', pricingFeat5: 'Mises a jour prioritaires',
+    pricingFree: 'Plan gratuit', pricingFreeFeat1: 'Programme S1-2 Fondation', pricingFreeFeat2: 'Kegel inverse relaxation', pricingFreeFeat3: 'Stats et series',
+    pricingBuy: 'Obtenir l\'acces a vie', pricingContinueFree: 'Continuer gratuitement',
+    pricingNote: 'Essai gratuit de 7 jours inclus.',
+    settingReminder: 'Rappel quotidien', reminderBody: 'C\'est l\'heure de votre entrainement Kegel !'
   },
   pt: {
     badge: "PROGRAMA MASCULINO",
@@ -1533,7 +1637,16 @@ const T = {
     assessTrackStrengthen: 'Trilha de forca', assessTrackRelax: 'Trilha de relaxamento', assessTrackBoth: 'Ambas as trilhas',
     assessStart: 'Vamos la!', assessSkip: 'Pular',
     settingStealth: 'Modo discreto',
-    accelLabel: 'Sensor respiratorio', accelAlert: 'Respire! Nao prenda a respiracao.', accelToggle: 'Sensor abdominal'
+    accelLabel: 'Sensor respiratorio', accelAlert: 'Respire! Nao prenda a respiracao.', accelToggle: 'Sensor abdominal',
+    proBadge: 'KEGOD Pro', proUnlock: 'Toque para desbloquear',
+    pricingTitle: 'Desbloquear KEGOD Pro', pricingSub: 'Acesso completo a todos os programas para sempre.',
+    pricingBest: 'Melhor valor', pricingLifetime: 'Acesso vitalicio', pricingOnce: 'Pagamento unico. Sem assinatura.',
+    pricingFeat1: 'Todos os 4 programas de forca', pricingFeat2: 'Kegel reverso relaxamento',
+    pricingFeat3: 'Biofeedback haptico avancado', pricingFeat4: 'Monitor respiratorio', pricingFeat5: 'Atualizacoes prioritarias',
+    pricingFree: 'Plano gratuito', pricingFreeFeat1: 'Programa S1-2 Fundacao', pricingFreeFeat2: 'Kegel reverso relaxamento', pricingFreeFeat3: 'Estatisticas e sequencias',
+    pricingBuy: 'Obter acesso vitalicio', pricingContinueFree: 'Continuar gratis',
+    pricingNote: 'Teste gratuito de 7 dias incluido.',
+    settingReminder: 'Lembrete diario', reminderBody: 'Hora do seu treino Kegel diario!'
   },
   es: {
     badge: "PROGRAMA MASCULINO",
@@ -1666,7 +1779,16 @@ const T = {
     assessTrackStrengthen: 'Ruta de fuerza', assessTrackRelax: 'Ruta de relajacion', assessTrackBoth: 'Ambas rutas',
     assessStart: 'Vamos!', assessSkip: 'Omitir',
     settingStealth: 'Modo discreto',
-    accelLabel: 'Sensor respiratorio', accelAlert: 'Respira! No contengas la respiracion.', accelToggle: 'Sensor abdominal'
+    accelLabel: 'Sensor respiratorio', accelAlert: 'Respira! No contengas la respiracion.', accelToggle: 'Sensor abdominal',
+    proBadge: 'KEGOD Pro', proUnlock: 'Toca para desbloquear',
+    pricingTitle: 'Desbloquear KEGOD Pro', pricingSub: 'Acceso completo a todos los programas para siempre.',
+    pricingBest: 'Mejor valor', pricingLifetime: 'Acceso de por vida', pricingOnce: 'Pago unico. Sin suscripcion.',
+    pricingFeat1: 'Los 4 programas de fuerza', pricingFeat2: 'Kegel inverso relajacion',
+    pricingFeat3: 'Biofeedback haptico avanzado', pricingFeat4: 'Monitor respiratorio', pricingFeat5: 'Actualizaciones prioritarias',
+    pricingFree: 'Plan gratuito', pricingFreeFeat1: 'Programa S1-2 Fundacion', pricingFreeFeat2: 'Kegel inverso relajacion', pricingFreeFeat3: 'Estadisticas y rachas',
+    pricingBuy: 'Obtener acceso de por vida', pricingContinueFree: 'Continuar gratis',
+    pricingNote: 'Prueba gratuita de 7 dias incluida.',
+    settingReminder: 'Recordatorio diario', reminderBody: 'Hora de tu entrenamiento Kegel diario!'
   }
 };
 
@@ -2417,6 +2539,7 @@ function startCountdown(id, callback) {
 }
 
 function toggleInline(id) {
+  if (checkLockedProgramme(id)) { showPricing(); return; }
   initAudio();
   audioMuted = false; // unmute when user interacts with timer
   if (!timers[id]) timers[id] = freshState(id);
@@ -2648,6 +2771,8 @@ function renderSettings() {
   document.getElementById('setCoaching').checked = appData.settings.coaching;
   document.getElementById('setVolume').value = Math.round(appData.settings.volume * 100);
   document.getElementById('setStealth').checked = !!appData.settings.stealth;
+  document.getElementById('setReminder').checked = !!appData.settings.reminderEnabled;
+  document.getElementById('setReminderTime').value = appData.settings.reminderTime || '09:00';
   applyStealth();
 }
 
@@ -2873,6 +2998,108 @@ function onDeviceMotion(e) {
   }
 }
 
+/* ═══ FREEMIUM GATE ═══ */
+const FREE_PROGRAMMES = ['s12', 'relax'];
+
+function isPro() {
+  return !!appData.pro || isTrialActive();
+}
+
+function isTrialActive() {
+  if (!appData.trialStart) return false;
+  const elapsed = Date.now() - appData.trialStart;
+  return elapsed < 7 * 24 * 60 * 60 * 1000; // 7 days
+}
+
+function startTrial() {
+  if (!appData.trialStart) {
+    appData.trialStart = Date.now();
+    saveData(appData);
+  }
+}
+
+function checkLockedProgramme(id) {
+  if (isPro() || FREE_PROGRAMMES.includes(id)) return false;
+  return true; // locked
+}
+
+function applyFreemiumGate() {
+  PROG_IDS.forEach(id => {
+    const card = document.querySelector('#prog-' + id + ' .programme-card');
+    if (!card) return;
+    // Remove existing lock overlay
+    const existing = card.querySelector('.locked-overlay');
+    if (existing) existing.remove();
+    if (checkLockedProgramme(id)) {
+      const lock = document.createElement('div');
+      lock.className = 'locked-overlay';
+      lock.innerHTML = '<div class="lock-icon">' + ico('lock', 32) + '</div><div class="lock-label" data-i18n="proBadge">KEGOD Pro</div><div class="lock-sub" data-i18n="proUnlock">Tap to unlock</div>';
+      lock.onclick = function(e) { e.stopPropagation(); showPricing(); };
+      card.appendChild(lock);
+    }
+  });
+}
+
+function showPricing() {
+  document.getElementById('pricingOverlay').classList.add('active');
+}
+
+function closePricing() {
+  document.getElementById('pricingOverlay').classList.remove('active');
+}
+
+function unlockPro() {
+  // In a PWA, this would redirect to payment. For now, start trial.
+  startTrial();
+  closePricing();
+  applyFreemiumGate();
+}
+
+/* ═══ DAILY REMINDERS ═══ */
+function toggleReminder(on) {
+  appData.settings.reminderEnabled = on;
+  saveData(appData);
+  if (on) scheduleReminder();
+}
+
+function updateReminder(time) {
+  appData.settings.reminderTime = time;
+  saveData(appData);
+  if (appData.settings.reminderEnabled) scheduleReminder();
+}
+
+function scheduleReminder() {
+  if (!('Notification' in window)) return;
+  Notification.requestPermission().then(perm => {
+    if (perm !== 'granted') {
+      appData.settings.reminderEnabled = false;
+      document.getElementById('setReminder').checked = false;
+      saveData(appData);
+    }
+  });
+}
+
+function checkReminder() {
+  if (!appData.settings.reminderEnabled || !appData.settings.reminderTime) return;
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const now = new Date();
+  const [h, m] = appData.settings.reminderTime.split(':').map(Number);
+  if (now.getHours() === h && now.getMinutes() === m) {
+    const today = todayStr();
+    if (appData._lastReminder !== today) {
+      appData._lastReminder = today;
+      saveData(appData);
+      new Notification('KEGOD', {
+        body: T[curLang].reminderBody || 'Time for your daily Kegel training!',
+        icon: '/icons/icon-192.png'
+      });
+    }
+  }
+}
+
+// Check reminder every 60 seconds
+setInterval(checkReminder, 60000);
+
 /* ═══ STEALTH MODE ═══ */
 function toggleStealth(on) {
   appData.settings.stealth = on;
@@ -3071,6 +3298,8 @@ document.addEventListener('DOMContentLoaded', () => {
     timers[id] = freshState(id);
     renderDots(id);
   });
+
+  applyFreemiumGate();
 });
 </script>
 </body>
