@@ -35,6 +35,7 @@
     --radius: 16px;
     --radius-sm: 10px;
     --tab-h: 64px;
+    --accent-calm: #64b5f6;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -598,6 +599,58 @@
   .share-stats-btn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:14px; margin:20px 0; background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:var(--bg); font-weight:700; font-size:0.9rem; border:none; border-radius:var(--radius-sm); cursor:pointer; transition:transform 0.15s, box-shadow 0.15s; }
   .share-stats-btn:active { transform:scale(0.97); }
   .share-stats-btn svg { flex-shrink:0; }
+
+  /* ═══ WAVE 2: REVERSE KEGELS / RELAX ═══ */
+  .inline-timer[data-phase="inhale"] .ring-core {
+    fill: var(--accent-calm); fill-opacity: 0.22;
+    r: 38; transition: r 0.8s ease-out, fill-opacity 0.6s;
+  }
+  .inline-timer[data-phase="exhale"] .ring-core {
+    fill: var(--accent-calm); fill-opacity: 0.10;
+    r: 22; transition: r 0.8s ease-in, fill-opacity 0.6s;
+  }
+  .inline-timer[data-phase="inhale"] .anatomy-muscle { fill-opacity: 0.15; fill: var(--accent-calm); }
+  .inline-timer[data-phase="inhale"] .anatomy-muscle.muscle-left { transform: translate(-5px, -3px) rotate(90deg); }
+  .inline-timer[data-phase="inhale"] .anatomy-muscle.muscle-right { transform: translate(5px, -3px) rotate(90deg); }
+  .inline-timer[data-phase="exhale"] .anatomy-muscle { fill-opacity: 0.20; fill: var(--accent-calm); }
+  .inline-timer[data-phase="exhale"] .anatomy-muscle.muscle-left { transform: translate(4px, 3px) rotate(90deg); }
+  .inline-timer[data-phase="exhale"] .anatomy-muscle.muscle-right { transform: translate(-4px, 3px) rotate(90deg); }
+  .breathing-guide { font-size: 0.75rem; color: var(--accent-calm); opacity: 0.7; margin-top: 4px; min-height: 18px; }
+
+  /* ═══ WAVE 2: ASSESSMENT QUESTIONNAIRE ═══ */
+  .assess-overlay {
+    position: fixed; inset: 0; z-index: 2001;
+    background: var(--bg); display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+    padding: 24px; text-align: center;
+  }
+  .assess-overlay.active { display: flex; }
+  .assess-card { max-width: 440px; width: 100%; }
+  .assess-card h2 { font-family: 'Fraunces', serif; font-size: 1.6rem; margin-bottom: 8px; }
+  .assess-card p { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 24px; }
+  .assess-q { margin-bottom: 24px; }
+  .assess-q label { display: block; font-weight: 600; font-size: 0.95rem; margin-bottom: 10px; }
+  .assess-options { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .assess-opt {
+    padding: 10px 20px; border-radius: 100px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text-dim); font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .assess-opt:hover, .assess-opt.selected { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+  .assess-opt.selected-calm { border-color: var(--accent-calm); color: var(--accent-calm); background: color-mix(in srgb, var(--accent-calm) 10%, transparent); }
+  .assess-progress { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; }
+  .assess-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); transition: background 0.3s; }
+  .assess-dot.active { background: var(--accent); }
+  .assess-dot.done { background: var(--accent); opacity: 0.5; }
+  .btn-assess {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 28px; border: none; border-radius: 100px;
+    font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 700;
+    cursor: pointer; background: linear-gradient(135deg, var(--accent), #00b894);
+    color: #0a0e1a; transition: all 0.2s; margin-top: 8px;
+  }
+  .btn-assess:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-assess:active:not(:disabled) { transform: scale(0.96); }
 </style>
 </head>
 <body>
@@ -630,6 +683,17 @@
     </div>
     <div class="onb-dots"><span></span><span></span><span class="active"></span></div>
     <button class="btn-cta onb-next" onclick="completeOnboarding()" data-i18n="onbStart">Start Training!</button>
+  </div>
+</div>
+
+<!-- Assessment Questionnaire (shown once after onboarding) -->
+<div class="assess-overlay" id="assessOverlay">
+  <div class="assess-card">
+    <div class="assess-progress" id="assessProgress"></div>
+    <h2 id="assessTitle" data-i18n="assessTitle">Quick Assessment</h2>
+    <p id="assessDesc" data-i18n="assessDesc">Help us personalize your training.</p>
+    <div id="assessBody"></div>
+    <button class="btn-assess" id="assessNext" onclick="assessNext()" disabled data-i18n="onbNext">Next</button>
   </div>
 </div>
 
@@ -736,6 +800,7 @@
     <button class="sub-tab" data-prog="s34" style="--tab-color:var(--accent-2);" onclick="switchProgramme('s34')" data-i18n="tabS34">S3-4 Progression</button>
     <button class="sub-tab" data-prog="s56" style="--tab-color:var(--warm);" onclick="switchProgramme('s56')" data-i18n="tabS56">S5-6 Intensive</button>
     <button class="sub-tab" data-prog="s78" style="--tab-color:var(--accent-3);" onclick="switchProgramme('s78')" data-i18n="tabS78">S7-8 Mastery</button>
+    <button class="sub-tab" data-prog="relax" style="--tab-color:var(--accent-calm);" onclick="switchProgramme('relax')" data-i18n="tabRelax">Relax</button>
   </div>
 
   <!-- S1-2 -->
@@ -853,6 +918,36 @@
         <div class="it-controls">
           <button class="btn-sm primary" id="btn-s78" onclick="toggleInline('s78')"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg> <span data-i18n="btnStart">Start</span></button>
           <button class="btn-sm ghost" onclick="resetInline('s78')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="btnReset">Reset</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Relax (Reverse Kegels) -->
+  <div id="prog-relax" class="training-programme">
+    <div class="programme-card">
+      <div class="programme-header">
+        <div class="left"><div class="programme-week" style="background:#64b5f622;color:var(--accent-calm);">R</div><div><h3 data-i18n="progRelax">Reverse Kegel</h3><div style="font-size:0.8rem;color:var(--text-muted);" data-i18n="relaxSubtitle">Pelvic floor relaxation</div></div></div>
+        <div class="tag" style="background:#64b5f618;color:var(--accent-calm);" data-i18n="levelRelax">All levels</div>
+      </div>
+      <div class="programme-body">
+        <div class="exercise-row"><div><div class="name" data-i18n="exoDiaphragmatic">Diaphragmatic breathing</div><div class="detail" data-i18n="exoRelaxDiaph">Inhale 5s (belly rises) &rarr; Exhale 5s (belly falls)</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="repsRelaxDiaph">8 reps x 3 sets</span></div></div>
+        <div class="exercise-row"><div><div class="name" data-i18n="exoDeepRelease">Deep release</div><div class="detail" data-i18n="exoRelaxDeep">Inhale 4s &rarr; Exhale 6s (full release)</div></div><div class="reps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="repsRelaxDeep">5 reps x 2 sets</span></div></div>
+        <div style="text-align:center"><div class="est-time"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg> ~6 min 30</div></div>
+      </div>
+      <div class="inline-timer" id="timer-relax" data-phase="idle">
+        <div class="it-header" style="color:var(--accent-calm);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg> <span data-i18n="timerRelax">TIMER RELAX</span></div>
+        <div class="it-exo-progress" id="dots-relax"></div>
+        <div class="it-exo-name" id="exo-relax" data-i18n="ready">Ready to start</div>
+        <div class="it-phase" id="phase-relax">—</div>
+        <div class="it-coaching" id="coaching-relax"></div>
+        <div class="breathing-guide" id="breathguide-relax"></div>
+        <div class="kegel-ring" id="ring-relax"><svg class="ring-svg" viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"/><circle class="ring-progress" cx="60" cy="60" r="50"/><circle class="ring-core" cx="60" cy="60" r="30"/><path class="anatomy-muscle muscle-left" d="M44,52 Q48,60 44,70 Q50,66 54,60 Q50,54 44,52Z"/><path class="anatomy-muscle muscle-right" d="M76,52 Q72,60 76,70 Q70,66 66,60 Q70,54 76,52Z"/></svg><div class="ring-icon" id="ring-icon-relax"></div></div>
+        <div class="it-display" id="display-relax" style="color:var(--accent-calm);">0:00</div>
+        <div class="it-meta" id="meta-relax">—</div>
+        <div class="it-controls">
+          <button class="btn-sm primary" id="btn-relax" onclick="toggleInline('relax')"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg> <span data-i18n="btnStart">Start</span></button>
+          <button class="btn-sm ghost" onclick="resetInline('relax')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="btnReset">Reset</span></button>
         </div>
       </div>
     </div>
@@ -1115,7 +1210,32 @@ const T = {
     shareStats: 'Share my progress',
     shareTitle: 'My KEGOD Progress',
     shareGenerated: 'Generated with KEGOD',
-    restTips: ['Stay hydrated between sets', 'Good posture = better results', 'Breathe deeply through your belly', 'The release is as important as the squeeze', 'Relax your jaw and shoulders', 'You are building real strength']
+    restTips: ['Stay hydrated between sets', 'Good posture = better results', 'Breathe deeply through your belly', 'The release is as important as the squeeze', 'Relax your jaw and shoulders', 'You are building real strength'],
+    // Wave 2: Reverse Kegels / Relax
+    tabRelax: 'Relax', progRelax: 'Reverse Kegel', relaxSubtitle: 'Pelvic floor relaxation', levelRelax: 'All levels',
+    exoDiaphragmatic: 'Diaphragmatic breathing', exoDeepRelease: 'Deep release',
+    exoRelaxDiaph: 'Inhale 5s (belly rises) \u2192 Exhale 5s (belly falls)',
+    exoRelaxDeep: 'Inhale 4s \u2192 Exhale 6s (full release)',
+    repsRelaxDiaph: '8 reps x 3 sets', repsRelaxDeep: '5 reps x 2 sets',
+    timerRelax: 'TIMER RELAX',
+    exoNameDiaphragmatic: 'Diaphragmatic breathing', exoNameDeepRelease: 'Deep release',
+    phase: { contract: "CONTRACT", release: "RELEASE", holdMax: "HOLD MAX", pct25: "25 %", pct50: "50 %", pct75: "75 %", pct100: "100 % MAX", rest: "REST", inhale: "INHALE", exhale: "EXHALE" },
+    coaching: {
+      contract: ['Breathe normally', 'Keep abs and glutes relaxed', 'Focus on lifting upward', 'Imagine stopping the flow'],
+      hold: ['Keep breathing steadily', 'Maintain the tension', "Don't clench your jaw", 'Stay focused'],
+      release: ['Let go completely', 'Feel the muscle relax', 'Prepare for the next rep', 'Full relaxation'],
+      rest: ['Shake it off', 'Great work so far!', 'Stay hydrated', 'Almost there!'],
+      inhale: ['Breathe into your belly', 'Feel your pelvic floor drop', 'Let your abdomen expand', 'Imagine space opening'],
+      exhale: ['Gently let the air out', 'Feel the natural lift', 'Release all tension', 'Slow and steady exhale']
+    },
+    // Assessment
+    assessTitle: 'Quick Assessment', assessDesc: 'Help us personalize your training.',
+    assessQ1: 'Do you experience pelvic tension or pain?', assessYes: 'Yes', assessNo: 'No',
+    assessQ2: 'What is your primary goal?', assessGoalStrength: 'Strength', assessGoalRelax: 'Relaxation', assessGoalBoth: 'Both',
+    assessQ3: 'Have you had prostate surgery?',
+    assessResult: 'Based on your answers, we recommend:',
+    assessTrackStrengthen: 'Strengthen track', assessTrackRelax: 'Relax track', assessTrackBoth: 'Both tracks',
+    assessStart: "Let's go!", assessSkip: 'Skip'
   },
   fr: {
     badge: "PROGRAMME HOMME",
@@ -1223,7 +1343,30 @@ const T = {
     shareStats: 'Partager mes progres',
     shareTitle: 'Mes progres KEGOD',
     shareGenerated: 'Genere avec KEGOD',
-    restTips: ['Restez hydrate entre les series', 'Bonne posture = meilleurs resultats', 'Respirez profondement par le ventre', 'Le relachement est aussi important que la contraction', 'Detendez la machoire et les epaules', 'Vous construisez une vraie force']
+    restTips: ['Restez hydrate entre les series', 'Bonne posture = meilleurs resultats', 'Respirez profondement par le ventre', 'Le relachement est aussi important que la contraction', 'Detendez la machoire et les epaules', 'Vous construisez une vraie force'],
+    tabRelax: 'Relax', progRelax: 'Kegel inverse', relaxSubtitle: 'Relaxation du plancher pelvien', levelRelax: 'Tous niveaux',
+    exoDiaphragmatic: 'Respiration diaphragmatique', exoDeepRelease: 'Relachement profond',
+    exoRelaxDiaph: 'Inspirer 5s (ventre monte) \u2192 Expirer 5s (ventre descend)',
+    exoRelaxDeep: 'Inspirer 4s \u2192 Expirer 6s (relachement total)',
+    repsRelaxDiaph: '8 reps x 3 series', repsRelaxDeep: '5 reps x 2 series',
+    timerRelax: 'MINUTEUR RELAX',
+    exoNameDiaphragmatic: 'Respiration diaphragmatique', exoNameDeepRelease: 'Relachement profond',
+    phase: { contract: "CONTRACTER", release: "RELACHER", holdMax: "MAINTENIR MAX", pct25: "25 %", pct50: "50 %", pct75: "75 %", pct100: "100 % MAX", rest: "REPOS", inhale: "INSPIRER", exhale: "EXPIRER" },
+    coaching: {
+      contract: ['Respirez normalement', 'Gardez abdos et fessiers relaches', 'Concentrez-vous sur la montee', 'Imaginez stopper le flux'],
+      hold: ['Respirez calmement', 'Maintenez la tension', 'Ne serrez pas la machoire', 'Restez concentre'],
+      release: ['Relachez completement', 'Sentez le muscle se detendre', 'Preparez la prochaine rep', 'Relachement total'],
+      rest: ['Detendez-vous', 'Bon travail !', 'Restez hydrate', 'Presque fini !'],
+      inhale: ['Respirez dans le ventre', 'Sentez le plancher pelvien descendre', 'Laissez l\'abdomen se gonfler', 'Imaginez l\'espace qui s\'ouvre'],
+      exhale: ['Laissez l\'air sortir doucement', 'Sentez la remontee naturelle', 'Relachez toute tension', 'Expirez lentement et regulierement']
+    },
+    assessTitle: 'Evaluation rapide', assessDesc: 'Aidez-nous a personnaliser votre entrainement.',
+    assessQ1: 'Ressentez-vous des tensions ou douleurs pelviennes ?', assessYes: 'Oui', assessNo: 'Non',
+    assessQ2: 'Quel est votre objectif principal ?', assessGoalStrength: 'Renforcement', assessGoalRelax: 'Relaxation', assessGoalBoth: 'Les deux',
+    assessQ3: 'Avez-vous subi une chirurgie prostatique ?',
+    assessResult: 'Selon vos reponses, nous recommandons :',
+    assessTrackStrengthen: 'Parcours renforcement', assessTrackRelax: 'Parcours relaxation', assessTrackBoth: 'Les deux parcours',
+    assessStart: 'C\'est parti !', assessSkip: 'Passer'
   },
   pt: {
     badge: "PROGRAMA MASCULINO",
@@ -1331,7 +1474,30 @@ const T = {
     shareStats: 'Compartilhar meu progresso',
     shareTitle: 'Meu progresso KEGOD',
     shareGenerated: 'Gerado com KEGOD',
-    restTips: ['Mantenha-se hidratado entre as series', 'Boa postura = melhores resultados', 'Respire profundamente pela barriga', 'O relaxamento e tao importante quanto a contracao', 'Relaxe a mandibula e os ombros', 'Voce esta construindo forca real']
+    restTips: ['Mantenha-se hidratado entre as series', 'Boa postura = melhores resultados', 'Respire profundamente pela barriga', 'O relaxamento e tao importante quanto a contracao', 'Relaxe a mandibula e os ombros', 'Voce esta construindo forca real'],
+    tabRelax: 'Relaxar', progRelax: 'Kegel reverso', relaxSubtitle: 'Relaxamento do assoalho pelvico', levelRelax: 'Todos os niveis',
+    exoDiaphragmatic: 'Respiracao diafragmatica', exoDeepRelease: 'Liberacao profunda',
+    exoRelaxDiaph: 'Inspirar 5s (barriga sobe) \u2192 Expirar 5s (barriga desce)',
+    exoRelaxDeep: 'Inspirar 4s \u2192 Expirar 6s (liberacao total)',
+    repsRelaxDiaph: '8 reps x 3 series', repsRelaxDeep: '5 reps x 2 series',
+    timerRelax: 'TEMPORIZADOR RELAXAR',
+    exoNameDiaphragmatic: 'Respiracao diafragmatica', exoNameDeepRelease: 'Liberacao profunda',
+    phase: { contract: "CONTRAIR", release: "RELAXAR", holdMax: "SUSTENTAR MAX", pct25: "25 %", pct50: "50 %", pct75: "75 %", pct100: "100 % MAX", rest: "DESCANSO", inhale: "INSPIRAR", exhale: "EXPIRAR" },
+    coaching: {
+      contract: ['Respire normalmente', 'Mantenha abdominais e gluteos relaxados', 'Foque em levantar', 'Imagine parar o fluxo'],
+      hold: ['Respire calmamente', 'Mantenha a tensao', 'Nao aperte a mandibula', 'Mantenha o foco'],
+      release: ['Solte completamente', 'Sinta o musculo relaxar', 'Prepare a proxima rep', 'Relaxamento total'],
+      rest: ['Relaxe', 'Otimo trabalho!', 'Mantenha-se hidratado', 'Quase la!'],
+      inhale: ['Respire pela barriga', 'Sinta o assoalho pelvico descer', 'Deixe o abdomen expandir', 'Imagine o espaco se abrindo'],
+      exhale: ['Solte o ar suavemente', 'Sinta a elevacao natural', 'Libere toda a tensao', 'Expire lenta e firmemente']
+    },
+    assessTitle: 'Avaliacao rapida', assessDesc: 'Ajude-nos a personalizar seu treino.',
+    assessQ1: 'Voce sente tensao ou dor pelvica?', assessYes: 'Sim', assessNo: 'Nao',
+    assessQ2: 'Qual e seu objetivo principal?', assessGoalStrength: 'Forca', assessGoalRelax: 'Relaxamento', assessGoalBoth: 'Ambos',
+    assessQ3: 'Voce fez cirurgia de prostata?',
+    assessResult: 'Com base nas suas respostas, recomendamos:',
+    assessTrackStrengthen: 'Trilha de forca', assessTrackRelax: 'Trilha de relaxamento', assessTrackBoth: 'Ambas as trilhas',
+    assessStart: 'Vamos la!', assessSkip: 'Pular'
   },
   es: {
     badge: "PROGRAMA MASCULINO",
@@ -1439,7 +1605,30 @@ const T = {
     shareStats: 'Compartir mi progreso',
     shareTitle: 'Mi progreso KEGOD',
     shareGenerated: 'Generado con KEGOD',
-    restTips: ['Mantente hidratado entre series', 'Buena postura = mejores resultados', 'Respira profundamente por el abdomen', 'La relajacion es tan importante como la contraccion', 'Relaja la mandibula y los hombros', 'Estas construyendo fuerza real']
+    restTips: ['Mantente hidratado entre series', 'Buena postura = mejores resultados', 'Respira profundamente por el abdomen', 'La relajacion es tan importante como la contraccion', 'Relaja la mandibula y los hombros', 'Estas construyendo fuerza real'],
+    tabRelax: 'Relajar', progRelax: 'Kegel inverso', relaxSubtitle: 'Relajacion del suelo pelvico', levelRelax: 'Todos los niveles',
+    exoDiaphragmatic: 'Respiracion diafragmatica', exoDeepRelease: 'Liberacion profunda',
+    exoRelaxDiaph: 'Inhalar 5s (abdomen sube) \u2192 Exhalar 5s (abdomen baja)',
+    exoRelaxDeep: 'Inhalar 4s \u2192 Exhalar 6s (liberacion total)',
+    repsRelaxDiaph: '8 reps x 3 series', repsRelaxDeep: '5 reps x 2 series',
+    timerRelax: 'TEMPORIZADOR RELAJAR',
+    exoNameDiaphragmatic: 'Respiracion diafragmatica', exoNameDeepRelease: 'Liberacion profunda',
+    phase: { contract: "CONTRAER", release: "SOLTAR", holdMax: "MANTENER MAX", pct25: "25 %", pct50: "50 %", pct75: "75 %", pct100: "100 % MAX", rest: "DESCANSO", inhale: "INHALAR", exhale: "EXHALAR" },
+    coaching: {
+      contract: ['Respira normalmente', 'Manten abdominales y gluteos relajados', 'Concentra en subir', 'Imagina detener el flujo'],
+      hold: ['Respira calmadamente', 'Manten la tension', 'No aprietes la mandibula', 'Manten el enfoque'],
+      release: ['Suelta completamente', 'Siente el musculo relajarse', 'Prepara la siguiente rep', 'Relajacion total'],
+      rest: ['Relajate', 'Buen trabajo!', 'Mantente hidratado', 'Ya casi!'],
+      inhale: ['Respira hacia el abdomen', 'Siente el suelo pelvico bajar', 'Deja que el abdomen se expanda', 'Imagina el espacio abriendose'],
+      exhale: ['Deja salir el aire suavemente', 'Siente la elevacion natural', 'Libera toda la tension', 'Exhala lenta y firmemente']
+    },
+    assessTitle: 'Evaluacion rapida', assessDesc: 'Ayudanos a personalizar tu entrenamiento.',
+    assessQ1: 'Sientes tension o dolor pelvico?', assessYes: 'Si', assessNo: 'No',
+    assessQ2: 'Cual es tu objetivo principal?', assessGoalStrength: 'Fuerza', assessGoalRelax: 'Relajacion', assessGoalBoth: 'Ambos',
+    assessQ3: 'Has tenido cirugia de prostata?',
+    assessResult: 'Segun tus respuestas, recomendamos:',
+    assessTrackStrengthen: 'Ruta de fuerza', assessTrackRelax: 'Ruta de relajacion', assessTrackBoth: 'Ambas rutas',
+    assessStart: 'Vamos!', assessSkip: 'Omitir'
   }
 };
 
@@ -1523,6 +1712,8 @@ const ICO = {
   gear: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>',
   lock: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>',
   users: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>',
+  inhale: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M6 8c0-1 1-4 6-4s6 3 6 4c0 4-2 10-6 14-4-4-6-10-6-14z"/></svg>',
+  exhale: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-4"/><path d="M6 16c0 1 1 4 6 4s6-3 6-4c0-4-2-10-6-14-4 4-6 10-6 14z"/></svg>',
 };
 function ico(name, size) { return ICO[name] ? ICO[name].replace(/width="\d+"/, 'width="'+(size||20)+'"').replace(/height="\d+"/, 'height="'+(size||20)+'"') : ''; }
 
@@ -1737,6 +1928,8 @@ function classifyPhase(step) {
   const lk = step.labelKey;
   if (lk === 'release') return 'release';
   if (lk === 'holdMax') return 'hold';
+  if (lk === 'inhale') return 'inhale';
+  if (lk === 'exhale') return 'exhale';
   return 'contract';
 }
 
@@ -1764,7 +1957,7 @@ function switchTab(tabName) {
 }
 
 /* ═══ PROGRAMME SUB-TAB NAVIGATION ═══ */
-const PROG_IDS = ['s12', 's34', 's56', 's78'];
+const PROG_IDS = ['s12', 's34', 's56', 's78', 'relax'];
 
 function switchProgramme(progId) {
   PROG_IDS.forEach(p => {
@@ -1799,7 +1992,9 @@ const exoNameKeyMap = {
   'Fast pulses': 'exoNameFastPulses',
   'Long hold': 'exoNameLongHold',
   'Express pulses': 'exoNameExpressPulses',
-  'Reverse staircase': 'exoNameReverseStaircase'
+  'Reverse staircase': 'exoNameReverseStaircase',
+  'Diaphragmatic breathing': 'exoNameDiaphragmatic',
+  'Deep release': 'exoNameDeepRelease'
 };
 
 function exoName(name) {
@@ -1894,6 +2089,21 @@ const programmes = {
           { labelKey: 'release', icon: ICO.chevDown, color: 'var(--text-dim)', dur: 5 }
         ]}
     ]
+  },
+  relax: {
+    color: 'var(--accent-calm)',
+    exercises: [
+      { name: 'Diaphragmatic breathing', sets: 3, reps: 8, restBetweenSets: 20,
+        phases: [
+          { labelKey: 'inhale', icon: ICO.inhale, color: 'var(--accent-calm)', dur: 5 },
+          { labelKey: 'exhale', icon: ICO.exhale, color: '#90caf9', dur: 5 }
+        ]},
+      { name: 'Deep release', sets: 2, reps: 5, restBetweenSets: 15,
+        phases: [
+          { labelKey: 'inhale', icon: ICO.inhale, color: 'var(--accent-calm)', dur: 4 },
+          { labelKey: 'exhale', icon: ICO.exhale, color: '#90caf9', dur: 6 }
+        ]}
+    ]
   }
 };
 
@@ -1961,8 +2171,28 @@ function updateRing(id, st) {
     progressCircle.style.strokeDashoffset = String(CIRCUMFERENCE * (1 - pct));
     progressCircle.style.stroke = s.color;
   }
+  // Breathing ring animation for relax programme
+  const coreCircle = document.querySelector('#ring-' + id + ' .ring-core');
+  if (coreCircle && (phase === 'inhale' || phase === 'exhale')) {
+    const pctDone = s.dur > 0 ? (s.dur - st.sec) / s.dur : 0;
+    const r = phase === 'inhale' ? 22 + 16 * pctDone : 38 - 16 * pctDone;
+    coreCircle.setAttribute('r', String(Math.round(r)));
+  } else if (coreCircle && (phase === 'rest' || phase === 'idle' || !st.running)) {
+    coreCircle.setAttribute('r', '30');
+  }
+  // Breathing guide text
+  const breathGuide = document.getElementById('breathguide-' + id);
+  if (breathGuide) {
+    if (phase === 'inhale') breathGuide.textContent = '\u2191 ' + (T[curLang].phase.inhale || 'INHALE');
+    else if (phase === 'exhale') breathGuide.textContent = '\u2193 ' + (T[curLang].phase.exhale || 'EXHALE');
+    else breathGuide.textContent = '';
+  }
   if (ringIcon) {
-    if (s.dur >= 10 && !s.isRest) {
+    if (phase === 'inhale' || phase === 'exhale') {
+      ringIcon.innerHTML = s.icon;
+      ringIcon.className = 'ring-icon';
+      ringIcon.style.color = s.color;
+    } else if (s.dur >= 10 && !s.isRest) {
       const pct = Math.round(((s.dur - st.sec) / s.dur) * 100);
       ringIcon.innerHTML = pct + '%';
       ringIcon.className = 'ring-icon pct';
@@ -2183,7 +2413,7 @@ function resetInline(id) {
 /* ═══ Visibility API: auto-pause on tab switch ═══ */
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
-    ['s12','s34','s56','s78'].forEach(id => {
+    PROG_IDS.forEach(id => {
       if (timers[id] && timers[id].running) {
         timers[id]._pausedByVisibility = true;
         timers[id].running = false;
@@ -2194,7 +2424,7 @@ document.addEventListener('visibilitychange', () => {
     });
     releaseWakeLock();
   } else {
-    ['s12','s34','s56','s78'].forEach(id => {
+    PROG_IDS.forEach(id => {
       if (timers[id] && timers[id]._pausedByVisibility) {
         timers[id]._pausedByVisibility = false;
         timers[id].running = true;
@@ -2398,6 +2628,107 @@ function completeOnboarding() {
   document.getElementById('onboardingOverlay').classList.remove('active');
   appData.onboarded = true;
   saveData(appData);
+  // Show assessment if not done yet
+  if (!appData.assessed) showAssessment();
+}
+
+/* ═══ ASSESSMENT QUESTIONNAIRE ═══ */
+const ASSESS_QUESTIONS = [
+  { key: 'assessQ1', type: 'yesno' },
+  { key: 'assessQ2', type: 'goal' },
+  { key: 'assessQ3', type: 'yesno' }
+];
+let assessStep = 0;
+let assessAnswers = {};
+
+function showAssessment() {
+  assessStep = 0;
+  assessAnswers = {};
+  document.getElementById('assessOverlay').classList.add('active');
+  renderAssessStep();
+}
+
+function renderAssessStep() {
+  const body = document.getElementById('assessBody');
+  const nextBtn = document.getElementById('assessNext');
+  const title = document.getElementById('assessTitle');
+  const desc = document.getElementById('assessDesc');
+  const progress = document.getElementById('assessProgress');
+  const lang = T[curLang];
+
+  // Progress dots
+  progress.innerHTML = ASSESS_QUESTIONS.map((_, i) =>
+    '<div class="assess-dot' + (i < assessStep ? ' done' : i === assessStep ? ' active' : '') + '"></div>'
+  ).join('') + '<div class="assess-dot' + (assessStep >= ASSESS_QUESTIONS.length ? ' active' : '') + '"></div>';
+
+  if (assessStep >= ASSESS_QUESTIONS.length) {
+    // Show result
+    title.textContent = lang.assessResult || 'Based on your answers, we recommend:';
+    desc.textContent = '';
+    const hasTension = assessAnswers[0] === 'yes';
+    const goal = assessAnswers[1] || 'strength';
+    const track = (hasTension || goal === 'relax') ? 'relax' : (goal === 'both' ? 'both' : 'strengthen');
+    appData.recommendedTrack = track;
+    const trackLabel = track === 'relax' ? (lang.assessTrackRelax || 'Relax track')
+      : track === 'both' ? (lang.assessTrackBoth || 'Both tracks')
+      : (lang.assessTrackStrengthen || 'Strengthen track');
+    const trackColor = track === 'relax' ? 'var(--accent-calm)' : track === 'both' ? 'var(--accent-2)' : 'var(--accent)';
+    body.innerHTML = '<div style="margin:20px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);"><div style="font-size:1.4rem;font-weight:800;font-family:Fraunces,serif;color:' + trackColor + ';">' + trackLabel + '</div></div>';
+    nextBtn.textContent = lang.assessStart || "Let's go!";
+    nextBtn.disabled = false;
+    nextBtn.onclick = finishAssessment;
+    return;
+  }
+
+  const q = ASSESS_QUESTIONS[assessStep];
+  title.textContent = lang.assessTitle || 'Quick Assessment';
+  desc.textContent = lang.assessDesc || 'Help us personalize your training.';
+  nextBtn.textContent = lang.onbNext || 'Next';
+  nextBtn.disabled = true;
+  nextBtn.onclick = assessNext;
+
+  let html = '<div class="assess-q"><label>' + (lang[q.key] || q.key) + '</label><div class="assess-options">';
+  if (q.type === 'yesno') {
+    html += '<button class="assess-opt" data-val="yes" onclick="selectAssess(this)">' + (lang.assessYes || 'Yes') + '</button>';
+    html += '<button class="assess-opt" data-val="no" onclick="selectAssess(this)">' + (lang.assessNo || 'No') + '</button>';
+  } else if (q.type === 'goal') {
+    html += '<button class="assess-opt" data-val="strength" onclick="selectAssess(this)">' + (lang.assessGoalStrength || 'Strength') + '</button>';
+    html += '<button class="assess-opt" data-val="relax" onclick="selectAssess(this)">' + (lang.assessGoalRelax || 'Relaxation') + '</button>';
+    html += '<button class="assess-opt" data-val="both" onclick="selectAssess(this)">' + (lang.assessGoalBoth || 'Both') + '</button>';
+  }
+  html += '</div></div>';
+  html += '<button class="assess-opt" style="margin-top:12px;font-size:0.8rem;opacity:0.6;" onclick="skipAssessment()">' + (lang.assessSkip || 'Skip') + '</button>';
+  body.innerHTML = html;
+}
+
+function selectAssess(el) {
+  el.parentElement.querySelectorAll('.assess-opt').forEach(b => b.classList.remove('selected', 'selected-calm'));
+  el.classList.add(el.dataset.val === 'relax' ? 'selected-calm' : 'selected');
+  assessAnswers[assessStep] = el.dataset.val;
+  document.getElementById('assessNext').disabled = false;
+}
+
+function assessNext() {
+  assessStep++;
+  renderAssessStep();
+}
+
+function finishAssessment() {
+  document.getElementById('assessOverlay').classList.remove('active');
+  appData.assessed = true;
+  saveData(appData);
+  // If relax recommended, switch to relax tab
+  if (appData.recommendedTrack === 'relax' || appData.recommendedTrack === 'both') {
+    switchTab('training');
+    switchProgramme('relax');
+  }
+}
+
+function skipAssessment() {
+  document.getElementById('assessOverlay').classList.remove('active');
+  appData.assessed = true;
+  appData.recommendedTrack = 'strengthen';
+  saveData(appData);
 }
 
 /* ═══ SESSION SUMMARY ═══ */
@@ -2412,7 +2743,7 @@ function showSessionSummary(programmeId, durationSecs, exCompleted, exTotal, new
   const overlay = document.getElementById('summaryOverlay');
   document.getElementById('summaryIcon').innerHTML = ico('celebrate', 48);
 
-  const progNames = { s12: 'S1-2', s34: 'S3-4', s56: 'S5-6', s78: 'S7-8' };
+  const progNames = { s12: 'S1-2', s34: 'S3-4', s56: 'S5-6', s78: 'S7-8', relax: 'Relax' };
   const mins = Math.floor(durationSecs / 60);
   const secs = durationSecs % 60;
   const timeStr = mins + ':' + String(secs).padStart(2, '0');
@@ -2576,7 +2907,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderSettings();
   updateHome();
 
-  ['s12','s34','s56','s78'].forEach(id => {
+  PROG_IDS.forEach(id => {
     timers[id] = freshState(id);
     renderDots(id);
   });

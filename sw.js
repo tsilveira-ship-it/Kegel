@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kegod-v3';
+const CACHE_NAME = 'kegod-v4';
 const ASSETS = [
   '/',
   '/index.html',
