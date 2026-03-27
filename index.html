@@ -688,6 +688,48 @@
   .setting-time-row { display: flex; align-items: center; gap: 8px; }
   .setting-time-row input[type="time"] { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 6px 10px; font-family: 'Outfit', sans-serif; font-size: 0.85rem; }
 
+  /* ═══ WAVE 5: HOLISTIC CONTENT ═══ */
+  .warmup-banner {
+    display: none; margin: 0 16px 12px; padding: 14px 18px;
+    background: color-mix(in srgb, var(--accent-calm) 8%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--accent-calm) 20%, var(--border));
+    border-radius: var(--radius-sm); cursor: pointer; text-align: center;
+  }
+  .warmup-banner.show { display: block; }
+  .warmup-banner .wb-label { font-size: 0.78rem; font-weight: 600; color: var(--accent-calm); text-transform: uppercase; letter-spacing: 1px; }
+  .warmup-banner .wb-desc { font-size: 0.82rem; color: var(--text-dim); margin-top: 2px; }
+  .warmup-timer { font-size: 1.4rem; font-weight: 800; font-family: 'Fraunces', serif; color: var(--accent-calm); margin: 8px 0; }
+  .warmup-phase { font-size: 0.85rem; font-weight: 600; color: var(--text-dim); }
+
+  .mobility-section { padding: 24px 20px; }
+  .mobility-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 16px; margin-bottom: 12px;
+  }
+  .mobility-card h4 { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+  .mobility-card .mob-dur { font-size: 0.78rem; color: var(--accent); font-weight: 600; }
+  .mobility-card p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; margin-top: 6px; }
+
+  .insights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+  @media (max-width: 640px) { .insights-grid { grid-template-columns: 1fr; } }
+  .insight-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 16px;
+  }
+  .insight-card .ic-tag { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-2); margin-bottom: 6px; }
+  .insight-card h4 { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+  .insight-card p { font-size: 0.8rem; color: var(--text-dim); line-height: 1.5; }
+
+  .recommendation-banner {
+    display: none; margin: 12px 16px; padding: 14px 18px;
+    background: color-mix(in srgb, var(--accent-2) 8%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--accent-2) 20%, var(--border));
+    border-radius: var(--radius-sm); cursor: pointer;
+  }
+  .recommendation-banner.show { display: block; }
+  .recommendation-banner .rec-label { font-size: 0.75rem; font-weight: 700; color: var(--accent-2); text-transform: uppercase; letter-spacing: 1px; }
+  .recommendation-banner .rec-text { font-size: 0.88rem; color: var(--text); margin-top: 4px; font-weight: 600; }
+
   /* ═══ WAVE 2: ASSESSMENT QUESTIONNAIRE ═══ */
   .assess-overlay {
     position: fixed; inset: 0; z-index: 2001;
@@ -869,6 +911,14 @@
   <div class="training-header">
     <h2 data-i18n="trainingHeader">Training</h2>
     <p data-i18n="chooseProgramme">Choose your programme</p>
+  </div>
+  <div class="recommendation-banner" id="recBanner" onclick="applyRecommendation()">
+    <div class="rec-label" data-i18n="recLabel">Recommended</div>
+    <div class="rec-text" id="recText"></div>
+  </div>
+  <div class="warmup-banner" id="warmupBanner" onclick="startWarmup()">
+    <div class="wb-label" data-i18n="warmupLabel">Warm-up</div>
+    <div class="wb-desc" data-i18n="warmupDesc">30s breathing routine before your session</div>
   </div>
   <div class="sub-tabs" id="subTabs">
     <button class="sub-tab active" data-prog="s12" style="--tab-color:var(--accent);" onclick="switchProgramme('s12')" data-i18n="tabS12">S1-2 Foundation</button>
@@ -1091,6 +1141,29 @@
         <div class="tip-card dont"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div><h4 data-i18n="tipDont2Title">Don't clench your glutes</h4><p data-i18n="tipDont2Desc">If your buttocks tighten, you're not isolating the right muscle.</p></div>
         <div class="tip-card dont"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div><h4 data-i18n="tipDont3Title">Don't overdo it</h4><p data-i18n="tipDont3Desc">Overtraining fatigues the muscle and causes the opposite effect.</p></div>
         <div class="tip-card dont"><div class="tip-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div><h4 data-i18n="tipDont4Title">Don't practice while urinating</h4><p data-i18n="tipDont4Desc">Stopping the flow should only be a test. Doing it regularly causes problems.</p></div>
+      </div>
+    </div>
+  </div>
+  <!-- Hip Mobility -->
+  <div class="guide-section mobility-section">
+    <div class="container">
+      <div class="section-label"><span class="line"></span><span data-i18n="mobilityLabel">Mobility</span></div>
+      <h2 data-i18n="mobilityTitle">Hip mobility stretches</h2>
+      <div class="mobility-card"><h4 data-i18n="mobChildPose">Child's pose</h4><div class="mob-dur">30s</div><p data-i18n="mobChildPoseDesc">Kneel, sit back on heels, fold forward with arms extended. Gently rock side to side to release the lower back and pelvic floor.</p></div>
+      <div class="mobility-card"><h4 data-i18n="mobDeepSquat">Deep squat hold</h4><div class="mob-dur">30s</div><p data-i18n="mobDeepSquatDesc">Feet shoulder-width, squat as deep as comfortable. Press elbows against inner knees. Breathe deeply to open the hips.</p></div>
+      <div class="mobility-card"><h4 data-i18n="mobPiriformis">Piriformis stretch</h4><div class="mob-dur">30s each side</div><p data-i18n="mobPiriformisDesc">Lie on back, cross one ankle over opposite knee, pull the lower leg toward chest. Hold and breathe. Switch sides.</p></div>
+    </div>
+  </div>
+  <!-- Insights / Educational Library -->
+  <div class="guide-section">
+    <div class="container">
+      <div class="section-label"><span class="line"></span><span data-i18n="insightsLabel">Insights</span></div>
+      <h2 data-i18n="insightsTitle">Did you know?</h2>
+      <div class="insights-grid">
+        <div class="insight-card"><div class="ic-tag" data-i18n="insightTagAnatomy">Anatomy</div><h4 data-i18n="insight1Title">The pelvic floor is a hammock</h4><p data-i18n="insight1Desc">It's a group of muscles stretching from the pubic bone to the tailbone, supporting your bladder, bowel, and sexual function.</p></div>
+        <div class="insight-card"><div class="ic-tag" data-i18n="insightTagMyth">Myth</div><h4 data-i18n="insight2Title">Kegels are only for women</h4><p data-i18n="insight2Desc">False! Men benefit enormously from Kegel exercises. Studies show improved erectile function and urinary control.</p></div>
+        <div class="insight-card"><div class="ic-tag" data-i18n="insightTagScience">Science</div><h4 data-i18n="insight3Title">Results take 4-6 weeks</h4><p data-i18n="insight3Desc">Like any muscle, the pelvic floor needs consistent training. Most men notice improvements after 4-6 weeks of daily practice.</p></div>
+        <div class="insight-card"><div class="ic-tag" data-i18n="insightTagTip">Tip</div><h4 data-i18n="insight4Title">Reverse Kegels matter too</h4><p data-i18n="insight4Desc">30% of men have a hypertonic pelvic floor. If you feel tension or pain, relaxation exercises may be more beneficial than strengthening.</p></div>
       </div>
     </div>
   </div>
@@ -1362,7 +1435,21 @@ const T = {
     pricingFree: 'Free Plan', pricingFreeFeat1: 'S1-2 Foundation programme', pricingFreeFeat2: 'Reverse Kegel relaxation', pricingFreeFeat3: 'Stats & streaks',
     pricingBuy: 'Get Lifetime Access', pricingContinueFree: 'Continue Free',
     pricingNote: '7-day free trial of all features included.',
-    settingReminder: 'Daily reminder', reminderBody: 'Time for your daily Kegel training!'
+    settingReminder: 'Daily reminder', reminderBody: 'Time for your daily Kegel training!',
+    // Wave 5
+    warmupLabel: 'Warm-up', warmupDesc: '30s breathing routine before your session',
+    warmupInhale: 'Inhale deeply...', warmupExhale: 'Exhale slowly...', warmupHold: 'Hold...',
+    recLabel: 'Recommended', recStartHere: 'Start here', recTryNext: 'Ready for the next level', recLevelUp: 'Level up!', recMastery: 'Master your pelvic floor', recTryRelax: 'Try relaxation training', recKeepGoing: 'Keep progressing',
+    mobilityLabel: 'Mobility', mobilityTitle: 'Hip mobility stretches',
+    mobChildPose: "Child's pose", mobChildPoseDesc: 'Kneel, sit back on heels, fold forward with arms extended. Gently rock side to side to release the lower back and pelvic floor.',
+    mobDeepSquat: 'Deep squat hold', mobDeepSquatDesc: 'Feet shoulder-width, squat as deep as comfortable. Press elbows against inner knees. Breathe deeply to open the hips.',
+    mobPiriformis: 'Piriformis stretch', mobPiriformisDesc: 'Lie on back, cross one ankle over opposite knee, pull the lower leg toward chest. Hold and breathe. Switch sides.',
+    insightsLabel: 'Insights', insightsTitle: 'Did you know?',
+    insightTagAnatomy: 'Anatomy', insightTagMyth: 'Myth', insightTagScience: 'Science', insightTagTip: 'Tip',
+    insight1Title: 'The pelvic floor is a hammock', insight1Desc: "It's a group of muscles stretching from the pubic bone to the tailbone, supporting your bladder, bowel, and sexual function.",
+    insight2Title: 'Kegels are only for women', insight2Desc: 'False! Men benefit enormously from Kegel exercises. Studies show improved erectile function and urinary control.',
+    insight3Title: 'Results take 4-6 weeks', insight3Desc: 'Like any muscle, the pelvic floor needs consistent training. Most men notice improvements after 4-6 weeks of daily practice.',
+    insight4Title: 'Reverse Kegels matter too', insight4Desc: '30% of men have a hypertonic pelvic floor. If you feel tension or pain, relaxation exercises may be more beneficial than strengthening.'
   },
   fr: {
     badge: "PROGRAMME HOMME",
@@ -1504,7 +1591,20 @@ const T = {
     pricingFree: 'Plan gratuit', pricingFreeFeat1: 'Programme S1-2 Fondation', pricingFreeFeat2: 'Kegel inverse relaxation', pricingFreeFeat3: 'Stats et series',
     pricingBuy: 'Obtenir l\'acces a vie', pricingContinueFree: 'Continuer gratuitement',
     pricingNote: 'Essai gratuit de 7 jours inclus.',
-    settingReminder: 'Rappel quotidien', reminderBody: 'C\'est l\'heure de votre entrainement Kegel !'
+    settingReminder: 'Rappel quotidien', reminderBody: 'C\'est l\'heure de votre entrainement Kegel !',
+    warmupLabel: 'Echauffement', warmupDesc: '30s de respiration avant votre seance',
+    warmupInhale: 'Inspirez profondement...', warmupExhale: 'Expirez lentement...', warmupHold: 'Maintenez...',
+    recLabel: 'Recommande', recStartHere: 'Commencez ici', recTryNext: 'Pret pour le niveau suivant', recLevelUp: 'Montez de niveau !', recMastery: 'Maitrisez votre plancher pelvien', recTryRelax: 'Essayez la relaxation', recKeepGoing: 'Continuez a progresser',
+    mobilityLabel: 'Mobilite', mobilityTitle: 'Etirements de mobilite des hanches',
+    mobChildPose: 'Posture de l\'enfant', mobChildPoseDesc: 'A genoux, asseyez-vous sur vos talons, penchez-vous en avant avec les bras etendus. Balancez doucement pour relacher le bas du dos et le plancher pelvien.',
+    mobDeepSquat: 'Squat profond', mobDeepSquatDesc: 'Pieds largeur d\'epaules, descendez aussi bas que confortable. Pressez les coudes contre les genoux interieurs. Respirez profondement.',
+    mobPiriformis: 'Etirement du piriforme', mobPiriformisDesc: 'Allonge sur le dos, croisez une cheville sur le genou oppose, tirez la jambe inferieure vers la poitrine. Maintenez et respirez. Changez de cote.',
+    insightsLabel: 'Savoir', insightsTitle: 'Le saviez-vous ?',
+    insightTagAnatomy: 'Anatomie', insightTagMyth: 'Mythe', insightTagScience: 'Science', insightTagTip: 'Conseil',
+    insight1Title: 'Le plancher pelvien est un hamac', insight1Desc: 'C\'est un groupe de muscles allant du pubis au coccyx, soutenant la vessie, l\'intestin et la fonction sexuelle.',
+    insight2Title: 'Le Kegel est reserve aux femmes', insight2Desc: 'Faux ! Les hommes beneficient enormement des exercices de Kegel. Des etudes montrent une amelioration de la fonction erectile et du controle urinaire.',
+    insight3Title: 'Les resultats prennent 4 a 6 semaines', insight3Desc: 'Comme tout muscle, le plancher pelvien necessite un entrainement regulier. La plupart des hommes constatent des ameliorations apres 4 a 6 semaines.',
+    insight4Title: 'Le Kegel inverse compte aussi', insight4Desc: '30% des hommes ont un plancher pelvien hypertonique. Si vous ressentez tension ou douleur, la relaxation peut etre plus benefique que le renforcement.'
   },
   pt: {
     badge: "PROGRAMA MASCULINO",
@@ -1646,7 +1746,20 @@ const T = {
     pricingFree: 'Plano gratuito', pricingFreeFeat1: 'Programa S1-2 Fundacao', pricingFreeFeat2: 'Kegel reverso relaxamento', pricingFreeFeat3: 'Estatisticas e sequencias',
     pricingBuy: 'Obter acesso vitalicio', pricingContinueFree: 'Continuar gratis',
     pricingNote: 'Teste gratuito de 7 dias incluido.',
-    settingReminder: 'Lembrete diario', reminderBody: 'Hora do seu treino Kegel diario!'
+    settingReminder: 'Lembrete diario', reminderBody: 'Hora do seu treino Kegel diario!',
+    warmupLabel: 'Aquecimento', warmupDesc: '30s de respiracao antes da sessao',
+    warmupInhale: 'Inspire profundamente...', warmupExhale: 'Expire lentamente...', warmupHold: 'Segure...',
+    recLabel: 'Recomendado', recStartHere: 'Comece aqui', recTryNext: 'Pronto para o proximo nivel', recLevelUp: 'Suba de nivel!', recMastery: 'Domine seu assoalho pelvico', recTryRelax: 'Experimente o relaxamento', recKeepGoing: 'Continue progredindo',
+    mobilityLabel: 'Mobilidade', mobilityTitle: 'Alongamentos de mobilidade do quadril',
+    mobChildPose: 'Postura da crianca', mobChildPoseDesc: 'Ajoelhado, sente nos calcanhares, incline para frente com bracos estendidos. Balance suavemente para liberar lombar e assoalho pelvico.',
+    mobDeepSquat: 'Agachamento profundo', mobDeepSquatDesc: 'Pes na largura dos ombros, agache o mais baixo possivel. Pressione cotovelos contra joelhos internos. Respire profundamente.',
+    mobPiriformis: 'Alongamento do piriforme', mobPiriformisDesc: 'Deitado de costas, cruze um tornozelo sobre o joelho oposto, puxe a perna inferior em direcao ao peito. Segure e respire. Troque de lado.',
+    insightsLabel: 'Insights', insightsTitle: 'Voce sabia?',
+    insightTagAnatomy: 'Anatomia', insightTagMyth: 'Mito', insightTagScience: 'Ciencia', insightTagTip: 'Dica',
+    insight1Title: 'O assoalho pelvico e uma rede', insight1Desc: 'E um grupo de musculos do pubis ao coccix, sustentando bexiga, intestino e funcao sexual.',
+    insight2Title: 'Kegel e so para mulheres', insight2Desc: 'Falso! Homens se beneficiam enormemente. Estudos mostram melhora na funcao eretil e controle urinario.',
+    insight3Title: 'Resultados levam 4-6 semanas', insight3Desc: 'Como qualquer musculo, o assoalho pelvico precisa de treino consistente. A maioria nota melhoras apos 4-6 semanas.',
+    insight4Title: 'Kegel reverso tambem importa', insight4Desc: '30% dos homens tem assoalho pelvico hipertonico. Se sente tensao ou dor, exercicios de relaxamento podem ser mais beneficos.'
   },
   es: {
     badge: "PROGRAMA MASCULINO",
@@ -1788,7 +1901,20 @@ const T = {
     pricingFree: 'Plan gratuito', pricingFreeFeat1: 'Programa S1-2 Fundacion', pricingFreeFeat2: 'Kegel inverso relajacion', pricingFreeFeat3: 'Estadisticas y rachas',
     pricingBuy: 'Obtener acceso de por vida', pricingContinueFree: 'Continuar gratis',
     pricingNote: 'Prueba gratuita de 7 dias incluida.',
-    settingReminder: 'Recordatorio diario', reminderBody: 'Hora de tu entrenamiento Kegel diario!'
+    settingReminder: 'Recordatorio diario', reminderBody: 'Hora de tu entrenamiento Kegel diario!',
+    warmupLabel: 'Calentamiento', warmupDesc: '30s de respiracion antes de tu sesion',
+    warmupInhale: 'Inhala profundamente...', warmupExhale: 'Exhala lentamente...', warmupHold: 'Manten...',
+    recLabel: 'Recomendado', recStartHere: 'Empieza aqui', recTryNext: 'Listo para el siguiente nivel', recLevelUp: 'Sube de nivel!', recMastery: 'Domina tu suelo pelvico', recTryRelax: 'Prueba la relajacion', recKeepGoing: 'Sigue progresando',
+    mobilityLabel: 'Movilidad', mobilityTitle: 'Estiramientos de movilidad de cadera',
+    mobChildPose: 'Postura del nino', mobChildPoseDesc: 'Arrodillado, sientate sobre los talones, inclinate hacia adelante con los brazos extendidos. Balancea suavemente para liberar lumbar y suelo pelvico.',
+    mobDeepSquat: 'Sentadilla profunda', mobDeepSquatDesc: 'Pies al ancho de hombros, baja lo mas que puedas comodamente. Presiona codos contra rodillas internas. Respira profundamente.',
+    mobPiriformis: 'Estiramiento del piriforme', mobPiriformisDesc: 'Acostado boca arriba, cruza un tobillo sobre la rodilla opuesta, tira de la pierna inferior hacia el pecho. Manten y respira. Cambia de lado.',
+    insightsLabel: 'Datos', insightsTitle: 'Sabias que?',
+    insightTagAnatomy: 'Anatomia', insightTagMyth: 'Mito', insightTagScience: 'Ciencia', insightTagTip: 'Consejo',
+    insight1Title: 'El suelo pelvico es una hamaca', insight1Desc: 'Es un grupo de musculos del pubis al coxis, sosteniendo vejiga, intestino y funcion sexual.',
+    insight2Title: 'Kegel es solo para mujeres', insight2Desc: 'Falso! Los hombres se benefician enormemente. Estudios muestran mejora en funcion erectil y control urinario.',
+    insight3Title: 'Los resultados toman 4-6 semanas', insight3Desc: 'Como cualquier musculo, el suelo pelvico necesita entrenamiento constante. La mayoria nota mejoras tras 4-6 semanas.',
+    insight4Title: 'El Kegel inverso tambien importa', insight4Desc: '30% de los hombres tienen suelo pelvico hipertonico. Si sientes tension o dolor, los ejercicios de relajacion pueden ser mas beneficiosos.'
   }
 };
 
@@ -2140,6 +2266,7 @@ function switchTab(tabName) {
   });
   if (tabName === 'stats') renderStats();
   if (tabName === 'accueil') updateHome();
+  if (tabName === 'training') { showWarmupBanner(); showRecommendation(); }
   window.scrollTo(0, 0);
 }
 
@@ -3099,6 +3226,80 @@ function checkReminder() {
 
 // Check reminder every 60 seconds
 setInterval(checkReminder, 60000);
+
+/* ═══ WARM-UP / COOL-DOWN ═══ */
+let warmupInterval = null;
+let warmupSec = 0;
+const WARMUP_DUR = 30;
+
+function showWarmupBanner() {
+  const banner = document.getElementById('warmupBanner');
+  if (banner) banner.classList.add('show');
+}
+
+function startWarmup() {
+  const banner = document.getElementById('warmupBanner');
+  warmupSec = WARMUP_DUR;
+  banner.innerHTML = '<div class="wb-label" data-i18n="warmupLabel">' + (T[curLang].warmupLabel || 'Warm-up') + '</div>' +
+    '<div class="warmup-timer" id="warmupTimer">' + warmupSec + '</div>' +
+    '<div class="warmup-phase" id="warmupPhase">' + (T[curLang].warmupInhale || 'Inhale deeply...') + '</div>';
+  warmupInterval = setInterval(() => {
+    warmupSec--;
+    const timerEl = document.getElementById('warmupTimer');
+    const phaseEl = document.getElementById('warmupPhase');
+    if (timerEl) timerEl.textContent = warmupSec;
+    if (phaseEl) {
+      // Alternate 4s inhale / 4s exhale / 2s hold
+      const cycle = warmupSec % 10;
+      if (cycle >= 6) phaseEl.textContent = T[curLang].warmupInhale || 'Inhale deeply...';
+      else if (cycle >= 2) phaseEl.textContent = T[curLang].warmupExhale || 'Exhale slowly...';
+      else phaseEl.textContent = T[curLang].warmupHold || 'Hold...';
+    }
+    if (warmupSec <= 0) {
+      clearInterval(warmupInterval);
+      banner.classList.remove('show');
+      banner.innerHTML = '<div class="wb-label">' + (T[curLang].warmupLabel || 'Warm-up') + '</div><div class="wb-desc">' + (T[curLang].warmupDesc || '30s breathing routine before your session') + '</div>';
+    }
+  }, 1000);
+}
+
+/* ═══ WEEKLY PROGRAMME RECOMMENDATION ═══ */
+function getRecommendation() {
+  const sessions = appData.sessions || [];
+  const completedCount = sessions.filter(s => s.completed).length;
+  const usedProgs = new Set(sessions.filter(s => s.completed).map(s => s.programme));
+  if (completedCount < 3) return { prog: 's12', reason: 'recStartHere' };
+  if (completedCount < 10 && !usedProgs.has('s34')) return { prog: 's34', reason: 'recTryNext' };
+  if (completedCount < 20 && !usedProgs.has('s56')) return { prog: 's56', reason: 'recLevelUp' };
+  if (completedCount >= 20 && !usedProgs.has('s78')) return { prog: 's78', reason: 'recMastery' };
+  if (!usedProgs.has('relax')) return { prog: 'relax', reason: 'recTryRelax' };
+  // Default: suggest next level based on most recent
+  const last = sessions.filter(s => s.completed).pop();
+  if (last) {
+    const idx = PROG_IDS.indexOf(last.programme);
+    if (idx >= 0 && idx < PROG_IDS.length - 1) return { prog: PROG_IDS[idx + 1], reason: 'recKeepGoing' };
+  }
+  return null;
+}
+
+function showRecommendation() {
+  const rec = getRecommendation();
+  const banner = document.getElementById('recBanner');
+  const text = document.getElementById('recText');
+  if (!rec || !banner || !text) return;
+  const progNames = { s12: 'S1-2', s34: 'S3-4', s56: 'S5-6', s78: 'S7-8', relax: 'Relax' };
+  const reason = T[curLang][rec.reason] || rec.reason;
+  text.textContent = reason + ' \u2192 ' + (progNames[rec.prog] || rec.prog);
+  banner.dataset.recProg = rec.prog;
+  banner.classList.add('show');
+}
+
+function applyRecommendation() {
+  const banner = document.getElementById('recBanner');
+  const prog = banner.dataset.recProg;
+  if (prog) switchProgramme(prog);
+  banner.classList.remove('show');
+}
 
 /* ═══ STEALTH MODE ═══ */
 function toggleStealth(on) {
