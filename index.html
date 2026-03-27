@@ -730,6 +730,55 @@
   .recommendation-banner .rec-label { font-size: 0.75rem; font-weight: 700; color: var(--accent-2); text-transform: uppercase; letter-spacing: 1px; }
   .recommendation-banner .rec-text { font-size: 0.88rem; color: var(--text); margin-top: 4px; font-weight: 600; }
 
+  /* ═══ WAVE 6: SOCIAL & CHALLENGES ═══ */
+  .partner-section { padding: 20px; }
+  .partner-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; text-align: center;
+  }
+  .partner-card h3 { font-weight: 700; font-size: 1rem; margin-bottom: 8px; }
+  .partner-card p { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 16px; }
+  .partner-code {
+    display: inline-block; padding: 10px 24px; background: var(--surface-2);
+    border: 1px dashed var(--accent); border-radius: var(--radius-sm);
+    font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 800;
+    color: var(--accent); letter-spacing: 4px; margin-bottom: 12px;
+  }
+  .partner-input-row { display: flex; gap: 8px; max-width: 300px; margin: 12px auto; }
+  .partner-input-row input {
+    flex: 1; padding: 10px 14px; background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--text); font-family: 'Outfit', sans-serif; font-size: 0.9rem;
+    text-transform: uppercase; letter-spacing: 2px; text-align: center;
+  }
+  .partner-input-row button {
+    padding: 10px 18px; border: none; border-radius: var(--radius-sm);
+    background: var(--accent); color: var(--bg); font-weight: 700;
+    font-family: 'Outfit', sans-serif; cursor: pointer;
+  }
+  .partner-streak { margin-top: 16px; padding: 12px; background: var(--surface-2); border-radius: var(--radius-sm); }
+  .partner-streak .ps-label { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+  .partner-streak .ps-val { font-family: 'Fraunces', serif; font-size: 1.6rem; font-weight: 800; color: var(--warm); }
+
+  .challenge-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px; margin-bottom: 12px;
+  }
+  .challenge-card .ch-badge { display: inline-block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 3px 10px; border-radius: 100px; margin-bottom: 8px; }
+  .challenge-card h4 { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+  .challenge-card p { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 10px; }
+  .challenge-progress { height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden; }
+  .challenge-progress-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+  .challenge-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; }
+
+  .export-section { padding: 16px 20px; }
+  .btn-export {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 12px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--text-dim); font-weight: 600;
+    font-size: 0.85rem; font-family: 'Outfit', sans-serif; cursor: pointer; margin-bottom: 8px;
+  }
+  .btn-export:active { transform: scale(0.98); }
+
   /* ═══ WAVE 2: ASSESSMENT QUESTIONNAIRE ═══ */
   .assess-overlay {
     position: fixed; inset: 0; z-index: 2001;
@@ -1229,6 +1278,34 @@
       <span data-i18n="shareStats">Share my progress</span>
     </button>
   </div>
+  <!-- Partner Mode -->
+  <div class="partner-section">
+    <div class="partner-card">
+      <h3 data-i18n="partnerTitle">Partner Mode</h3>
+      <p data-i18n="partnerDesc">Train together! Share your code with a partner to sync streaks.</p>
+      <div class="partner-code" id="partnerCode">—</div>
+      <div><button class="btn-sm ghost" onclick="generatePartnerCode()" data-i18n="partnerGenerate">Generate code</button></div>
+      <div class="partner-input-row">
+        <input type="text" id="partnerInput" placeholder="XXXX" maxlength="6">
+        <button onclick="linkPartner()" data-i18n="partnerLink">Link</button>
+      </div>
+      <div class="partner-streak" id="partnerStreak" style="display:none;">
+        <div class="ps-label" data-i18n="partnerSharedStreak">Shared streak</div>
+        <div class="ps-val" id="partnerStreakVal">0</div>
+      </div>
+    </div>
+  </div>
+  <!-- Community Challenges -->
+  <div class="partner-section" id="challengesSection">
+    <h3 style="font-weight:700;font-size:1rem;margin-bottom:12px;" data-i18n="challengesTitle">Challenges</h3>
+    <div id="challengesList"></div>
+  </div>
+  <!-- Export / Import -->
+  <div class="export-section">
+    <button class="btn-export" onclick="exportData()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> <span data-i18n="exportData">Export data</span></button>
+    <button class="btn-export" onclick="importData()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> <span data-i18n="importData">Import data</span></button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(this)">
+  </div>
 </div>
 
 <!-- Pricing Overlay -->
@@ -1449,7 +1526,10 @@ const T = {
     insight1Title: 'The pelvic floor is a hammock', insight1Desc: "It's a group of muscles stretching from the pubic bone to the tailbone, supporting your bladder, bowel, and sexual function.",
     insight2Title: 'Kegels are only for women', insight2Desc: 'False! Men benefit enormously from Kegel exercises. Studies show improved erectile function and urinary control.',
     insight3Title: 'Results take 4-6 weeks', insight3Desc: 'Like any muscle, the pelvic floor needs consistent training. Most men notice improvements after 4-6 weeks of daily practice.',
-    insight4Title: 'Reverse Kegels matter too', insight4Desc: '30% of men have a hypertonic pelvic floor. If you feel tension or pain, relaxation exercises may be more beneficial than strengthening.'
+    insight4Title: 'Reverse Kegels matter too', insight4Desc: '30% of men have a hypertonic pelvic floor. If you feel tension or pain, relaxation exercises may be more beneficial than strengthening.',
+    partnerTitle: 'Partner Mode', partnerDesc: 'Train together, stay motivated. Share your code with a partner.', partnerGenerate: 'Generate code', partnerLink: 'Link partner', partnerSharedStreak: 'Shared streak',
+    challengesTitle: 'Challenges', ch30day: '30-Day Streak', ch30dayDesc: 'Maintain a 30-day training streak.', ch100sess: '100 Sessions', ch100sessDesc: 'Complete 100 training sessions.', chAllProg: 'All Programmes', chAllProgDesc: 'Try all 5 training programmes.', ch7perfect: '7 Perfect Weeks', ch7perfectDesc: 'Complete 7 weeks with 6+ sessions each.',
+    exportData: 'Export data', importData: 'Import data'
   },
   fr: {
     badge: "PROGRAMME HOMME",
@@ -1604,7 +1684,10 @@ const T = {
     insight1Title: 'Le plancher pelvien est un hamac', insight1Desc: 'C\'est un groupe de muscles allant du pubis au coccyx, soutenant la vessie, l\'intestin et la fonction sexuelle.',
     insight2Title: 'Le Kegel est reserve aux femmes', insight2Desc: 'Faux ! Les hommes beneficient enormement des exercices de Kegel. Des etudes montrent une amelioration de la fonction erectile et du controle urinaire.',
     insight3Title: 'Les resultats prennent 4 a 6 semaines', insight3Desc: 'Comme tout muscle, le plancher pelvien necessite un entrainement regulier. La plupart des hommes constatent des ameliorations apres 4 a 6 semaines.',
-    insight4Title: 'Le Kegel inverse compte aussi', insight4Desc: '30% des hommes ont un plancher pelvien hypertonique. Si vous ressentez tension ou douleur, la relaxation peut etre plus benefique que le renforcement.'
+    insight4Title: 'Le Kegel inverse compte aussi', insight4Desc: '30% des hommes ont un plancher pelvien hypertonique. Si vous ressentez tension ou douleur, la relaxation peut etre plus benefique que le renforcement.',
+    partnerTitle: 'Mode partenaire', partnerDesc: 'Entrainez-vous ensemble, restez motives. Partagez votre code avec un partenaire.', partnerGenerate: 'Generer un code', partnerLink: 'Lier un partenaire', partnerSharedStreak: 'Serie partagee',
+    challengesTitle: 'Defis', ch30day: 'Serie de 30 jours', ch30dayDesc: 'Maintenez une serie de 30 jours.', ch100sess: '100 sessions', ch100sessDesc: 'Completez 100 seances d\'entrainement.', chAllProg: 'Tous les programmes', chAllProgDesc: 'Essayez les 5 programmes.', ch7perfect: '7 semaines parfaites', ch7perfectDesc: 'Completez 7 semaines avec 6+ seances chacune.',
+    exportData: 'Exporter les donnees', importData: 'Importer les donnees'
   },
   pt: {
     badge: "PROGRAMA MASCULINO",
@@ -1759,7 +1842,10 @@ const T = {
     insight1Title: 'O assoalho pelvico e uma rede', insight1Desc: 'E um grupo de musculos do pubis ao coccix, sustentando bexiga, intestino e funcao sexual.',
     insight2Title: 'Kegel e so para mulheres', insight2Desc: 'Falso! Homens se beneficiam enormemente. Estudos mostram melhora na funcao eretil e controle urinario.',
     insight3Title: 'Resultados levam 4-6 semanas', insight3Desc: 'Como qualquer musculo, o assoalho pelvico precisa de treino consistente. A maioria nota melhoras apos 4-6 semanas.',
-    insight4Title: 'Kegel reverso tambem importa', insight4Desc: '30% dos homens tem assoalho pelvico hipertonico. Se sente tensao ou dor, exercicios de relaxamento podem ser mais beneficos.'
+    insight4Title: 'Kegel reverso tambem importa', insight4Desc: '30% dos homens tem assoalho pelvico hipertonico. Se sente tensao ou dor, exercicios de relaxamento podem ser mais beneficos.',
+    partnerTitle: 'Modo parceiro', partnerDesc: 'Treinem juntos, mantenham a motivacao. Compartilhe seu codigo com um parceiro.', partnerGenerate: 'Gerar codigo', partnerLink: 'Vincular parceiro', partnerSharedStreak: 'Serie compartilhada',
+    challengesTitle: 'Desafios', ch30day: 'Serie de 30 dias', ch30dayDesc: 'Mantenha uma serie de 30 dias de treino.', ch100sess: '100 sessoes', ch100sessDesc: 'Complete 100 sessoes de treino.', chAllProg: 'Todos os programas', chAllProgDesc: 'Experimente todos os 5 programas.', ch7perfect: '7 semanas perfeitas', ch7perfectDesc: 'Complete 7 semanas com 6+ sessoes cada.',
+    exportData: 'Exportar dados', importData: 'Importar dados'
   },
   es: {
     badge: "PROGRAMA MASCULINO",
@@ -1914,7 +2000,10 @@ const T = {
     insight1Title: 'El suelo pelvico es una hamaca', insight1Desc: 'Es un grupo de musculos del pubis al coxis, sosteniendo vejiga, intestino y funcion sexual.',
     insight2Title: 'Kegel es solo para mujeres', insight2Desc: 'Falso! Los hombres se benefician enormemente. Estudios muestran mejora en funcion erectil y control urinario.',
     insight3Title: 'Los resultados toman 4-6 semanas', insight3Desc: 'Como cualquier musculo, el suelo pelvico necesita entrenamiento constante. La mayoria nota mejoras tras 4-6 semanas.',
-    insight4Title: 'El Kegel inverso tambien importa', insight4Desc: '30% de los hombres tienen suelo pelvico hipertonico. Si sientes tension o dolor, los ejercicios de relajacion pueden ser mas beneficiosos.'
+    insight4Title: 'El Kegel inverso tambien importa', insight4Desc: '30% de los hombres tienen suelo pelvico hipertonico. Si sientes tension o dolor, los ejercicios de relajacion pueden ser mas beneficiosos.',
+    partnerTitle: 'Modo companero', partnerDesc: 'Entrenen juntos, mantengan la motivacion. Comparte tu codigo con un companero.', partnerGenerate: 'Generar codigo', partnerLink: 'Vincular companero', partnerSharedStreak: 'Racha compartida',
+    challengesTitle: 'Desafios', ch30day: 'Racha de 30 dias', ch30dayDesc: 'Mantener una racha de 30 dias de entrenamiento.', ch100sess: '100 sesiones', ch100sessDesc: 'Completar 100 sesiones de entrenamiento.', chAllProg: 'Todos los programas', chAllProgDesc: 'Probar los 5 programas de entrenamiento.', ch7perfect: '7 semanas perfectas', ch7perfectDesc: 'Completar 7 semanas con 6+ sesiones cada una.',
+    exportData: 'Exportar datos', importData: 'Importar datos'
   }
 };
 
@@ -2812,6 +2901,9 @@ function renderStats() {
   renderCalendar();
   renderWeeklyChart();
   renderBadges();
+  renderChallenges();
+  updatePartnerStreak();
+  if (appData.partnerCode) document.getElementById('partnerCode').textContent = appData.partnerCode;
 }
 
 function changeMonth(delta) {
@@ -3479,6 +3571,117 @@ function downloadBlob(blob) {
   document.body.appendChild(a); a.click();
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/* ═══ PARTNER MODE ═══ */
+function generatePartnerCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  appData.partnerCode = code;
+  saveData(appData);
+  document.getElementById('partnerCode').textContent = code;
+  // Copy to clipboard
+  if (navigator.clipboard) navigator.clipboard.writeText(code);
+}
+
+function linkPartner() {
+  const input = document.getElementById('partnerInput');
+  const code = input.value.trim().toUpperCase();
+  if (code.length < 4) return;
+  appData.linkedPartner = code;
+  saveData(appData);
+  updatePartnerStreak();
+  input.value = '';
+}
+
+function updatePartnerStreak() {
+  const el = document.getElementById('partnerStreak');
+  const val = document.getElementById('partnerStreakVal');
+  if (appData.linkedPartner) {
+    el.style.display = '';
+    // In a real app this would sync via server. Locally, show own streak as shared.
+    val.textContent = appData.streaks.current;
+  }
+}
+
+/* ═══ COMMUNITY CHALLENGES ═══ */
+const CHALLENGES = [
+  { id: '30day', labelKey: 'ch30day', descKey: 'ch30dayDesc', target: 30, type: 'streak', color: '#fbbf24' },
+  { id: '100sess', labelKey: 'ch100sess', descKey: 'ch100sessDesc', target: 100, type: 'sessions', color: '#00d4aa' },
+  { id: 'allprog', labelKey: 'chAllProg', descKey: 'chAllProgDesc', target: 5, type: 'programmes', color: '#7c5cfc' },
+  { id: '7perfect', labelKey: 'ch7perfect', descKey: 'ch7perfectDesc', target: 7, type: 'weekperfect', color: '#ff6b6b' }
+];
+
+function getChallengeProgress(ch) {
+  if (ch.type === 'streak') return Math.min(appData.streaks.best, ch.target);
+  if (ch.type === 'sessions') return Math.min(appData.sessions.filter(s => s.completed).length, ch.target);
+  if (ch.type === 'programmes') {
+    const used = new Set(appData.sessions.filter(s => s.completed).map(s => s.programme));
+    return Math.min(used.size, ch.target);
+  }
+  if (ch.type === 'weekperfect') {
+    // Count weeks with 6+ sessions
+    const weeks = {};
+    appData.sessions.filter(s => s.completed).forEach(s => {
+      const d = new Date(s.date || s.timestamp);
+      const week = d.getFullYear() + '-W' + Math.ceil((d.getDate() + new Date(d.getFullYear(), d.getMonth(), 1).getDay()) / 7);
+      weeks[week] = (weeks[week] || 0) + 1;
+    });
+    return Math.min(Object.values(weeks).filter(c => c >= 6).length, ch.target);
+  }
+  return 0;
+}
+
+function renderChallenges() {
+  const list = document.getElementById('challengesList');
+  if (!list) return;
+  list.innerHTML = CHALLENGES.map(ch => {
+    const progress = getChallengeProgress(ch);
+    const pct = Math.round((progress / ch.target) * 100);
+    const label = T[curLang][ch.labelKey] || ch.id;
+    const desc = T[curLang][ch.descKey] || '';
+    return '<div class="challenge-card"><div class="ch-badge" style="background:' + ch.color + '22;color:' + ch.color + ';">' + (pct >= 100 ? '\u2713 ' : '') + label + '</div>' +
+      '<p>' + desc + '</p>' +
+      '<div class="challenge-progress"><div class="challenge-progress-fill" style="width:' + pct + '%;background:' + ch.color + ';"></div></div>' +
+      '<div class="challenge-meta"><span>' + progress + '/' + ch.target + '</span><span>' + pct + '%</span></div></div>';
+  }).join('');
+}
+
+/* ═══ EXPORT / IMPORT DATA ═══ */
+function exportData() {
+  const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'kegod-backup-' + todayStr() + '.json';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function importData() {
+  document.getElementById('importFile').click();
+}
+
+function handleImport(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.version) {
+        appData = data;
+        saveData(appData);
+        renderSettings();
+        if (document.getElementById('view-stats').classList.contains('active')) renderStats();
+        renderChallenges();
+        updatePartnerStreak();
+      }
+    } catch(err) { /* invalid file */ }
+  };
+  reader.readAsText(file);
+  input.value = '';
 }
 
 /* ═══ Init ═══ */
