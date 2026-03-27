@@ -616,6 +616,27 @@
   .inline-timer[data-phase="exhale"] .anatomy-muscle.muscle-left { transform: translate(4px, 3px) rotate(90deg); }
   .inline-timer[data-phase="exhale"] .anatomy-muscle.muscle-right { transform: translate(-4px, 3px) rotate(90deg); }
   .breathing-guide { font-size: 0.75rem; color: var(--accent-calm); opacity: 0.7; margin-top: 4px; min-height: 18px; }
+  .accel-bar-wrap { display: none; margin: 8px auto; max-width: 260px; }
+  .accel-bar-wrap.active { display: block; }
+  .accel-bar-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .accel-bar { height: 8px; background: var(--surface-3); border-radius: 4px; overflow: hidden; position: relative; }
+  .accel-bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s ease, background 0.3s; background: var(--accent-calm); width: 50%; }
+  .accel-bar-fill.good { background: var(--accent); }
+  .accel-bar-fill.warning { background: var(--warm); }
+  .accel-alert { font-size: 0.72rem; color: var(--warm); margin-top: 4px; min-height: 16px; opacity: 0; transition: opacity 0.3s; }
+  .accel-alert.show { opacity: 1; }
+  .accel-toggle { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--text-muted); cursor: pointer; margin-top: 8px; }
+  .accel-toggle input { accent-color: var(--accent-calm); }
+
+  /* ═══ WAVE 3: STEALTH MODE ═══ */
+  .stealth-mode .accueil-header, .stealth-mode .hero-badge,
+  .stealth-mode .anatomy-grid, .stealth-mode .cta-section,
+  .stealth-mode .training-header, .stealth-mode .training-overview { display: none !important; }
+  .stealth-mode .programme-header, .stealth-mode .programme-body { opacity: 0.5; }
+  .stealth-mode .inline-timer { opacity: 1 !important; }
+  .stealth-mode .tab-bar { background: #000; border-color: #111; }
+  .stealth-mode .it-coaching, .stealth-mode .breathing-guide { display: none; }
+  .stealth-mode .lang-switcher { display: none; }
 
   /* ═══ WAVE 2: ASSESSMENT QUESTIONNAIRE ═══ */
   .assess-overlay {
@@ -726,8 +747,10 @@
     <div class="setting-row"><span data-i18n="settingCoaching">Coaching text</span><label class="toggle"><input type="checkbox" id="setCoaching" onchange="toggleSetting('coaching')"><span class="toggle-slider"></span></label></div>
     <div class="setting-row"><span data-i18n="settingVolume">Volume</span><input type="range" min="1" max="30" id="setVolume" class="range-slider" oninput="updateVolume(this.value)"></div>
     <div class="setting-divider"></div>
+    <div class="setting-row"><span data-i18n="settingStealth">Stealth mode</span><label class="toggle"><input type="checkbox" id="setStealth" onchange="toggleStealth(this.checked)"><span class="toggle-slider"></span></label></div>
+    <div class="setting-divider"></div>
     <div class="setting-row danger"><button class="btn-reset-data" onclick="resetAllData()" data-i18n="settingResetData">Reset all data</button></div>
-    <div class="setting-version">KEGOD v2.0</div>
+    <div class="setting-version">KEGOD v3.0</div>
   </div>
 </div>
 
@@ -942,6 +965,12 @@
         <div class="it-phase" id="phase-relax">—</div>
         <div class="it-coaching" id="coaching-relax"></div>
         <div class="breathing-guide" id="breathguide-relax"></div>
+        <div class="accel-bar-wrap" id="accelWrap">
+          <div class="accel-bar-label" data-i18n="accelLabel">Breathing sensor</div>
+          <div class="accel-bar"><div class="accel-bar-fill" id="accelFill"></div></div>
+          <div class="accel-alert" id="accelAlert" data-i18n="accelAlert">Breathe! Don't hold your breath.</div>
+        </div>
+        <label class="accel-toggle" id="accelToggle"><input type="checkbox" id="accelCheck" onchange="toggleAccel(this.checked)"> <span data-i18n="accelToggle">Belly sensor</span></label>
         <div class="kegel-ring" id="ring-relax"><svg class="ring-svg" viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"/><circle class="ring-progress" cx="60" cy="60" r="50"/><circle class="ring-core" cx="60" cy="60" r="30"/><path class="anatomy-muscle muscle-left" d="M44,52 Q48,60 44,70 Q50,66 54,60 Q50,54 44,52Z"/><path class="anatomy-muscle muscle-right" d="M76,52 Q72,60 76,70 Q70,66 66,60 Q70,54 76,52Z"/></svg><div class="ring-icon" id="ring-icon-relax"></div></div>
         <div class="it-display" id="display-relax" style="color:var(--accent-calm);">0:00</div>
         <div class="it-meta" id="meta-relax">—</div>
@@ -1235,7 +1264,10 @@ const T = {
     assessQ3: 'Have you had prostate surgery?',
     assessResult: 'Based on your answers, we recommend:',
     assessTrackStrengthen: 'Strengthen track', assessTrackRelax: 'Relax track', assessTrackBoth: 'Both tracks',
-    assessStart: "Let's go!", assessSkip: 'Skip'
+    assessStart: "Let's go!", assessSkip: 'Skip',
+    // Wave 3
+    settingStealth: 'Stealth mode',
+    accelLabel: 'Breathing sensor', accelAlert: "Breathe! Don't hold your breath.", accelToggle: 'Belly sensor'
   },
   fr: {
     badge: "PROGRAMME HOMME",
@@ -1366,7 +1398,9 @@ const T = {
     assessQ3: 'Avez-vous subi une chirurgie prostatique ?',
     assessResult: 'Selon vos reponses, nous recommandons :',
     assessTrackStrengthen: 'Parcours renforcement', assessTrackRelax: 'Parcours relaxation', assessTrackBoth: 'Les deux parcours',
-    assessStart: 'C\'est parti !', assessSkip: 'Passer'
+    assessStart: 'C\'est parti !', assessSkip: 'Passer',
+    settingStealth: 'Mode discret',
+    accelLabel: 'Capteur respiratoire', accelAlert: 'Respirez ! Ne retenez pas votre souffle.', accelToggle: 'Capteur ventral'
   },
   pt: {
     badge: "PROGRAMA MASCULINO",
@@ -1497,7 +1531,9 @@ const T = {
     assessQ3: 'Voce fez cirurgia de prostata?',
     assessResult: 'Com base nas suas respostas, recomendamos:',
     assessTrackStrengthen: 'Trilha de forca', assessTrackRelax: 'Trilha de relaxamento', assessTrackBoth: 'Ambas as trilhas',
-    assessStart: 'Vamos la!', assessSkip: 'Pular'
+    assessStart: 'Vamos la!', assessSkip: 'Pular',
+    settingStealth: 'Modo discreto',
+    accelLabel: 'Sensor respiratorio', accelAlert: 'Respire! Nao prenda a respiracao.', accelToggle: 'Sensor abdominal'
   },
   es: {
     badge: "PROGRAMA MASCULINO",
@@ -1628,7 +1664,9 @@ const T = {
     assessQ3: 'Has tenido cirugia de prostata?',
     assessResult: 'Segun tus respuestas, recomendamos:',
     assessTrackStrengthen: 'Ruta de fuerza', assessTrackRelax: 'Ruta de relajacion', assessTrackBoth: 'Ambas rutas',
-    assessStart: 'Vamos!', assessSkip: 'Omitir'
+    assessStart: 'Vamos!', assessSkip: 'Omitir',
+    settingStealth: 'Modo discreto',
+    accelLabel: 'Sensor respiratorio', accelAlert: 'Respira! No contengas la respiracion.', accelToggle: 'Sensor abdominal'
   }
 };
 
@@ -1913,12 +1951,39 @@ function playPhaseSound(phase) {
     case 'hold':     playTone(659, 0.15); break;
     case 'release':  playTone(392, 0.3); break;
     case 'rest':     playTone(330, 0.2, 'triangle'); break;
+    case 'inhale':   playTone(440, 0.25, 'triangle'); break;
+    case 'exhale':   playTone(349, 0.3, 'triangle'); break;
     case 'done':
       playTone(523, 0.15);
       setTimeout(() => playTone(659, 0.15), 120);
       setTimeout(() => playTone(784, 0.25), 240);
       break;
   }
+}
+
+/* Progressive haptic patterns per phase */
+const HAPTIC_PATTERNS = {
+  contract: [80],
+  hold: [30, 50, 30, 50, 30],
+  release: [120],
+  rest: [20],
+  inhale: [15, 40, 15, 40, 15, 40, 15],
+  exhale: [60, 80, 60],
+  done: [200, 100, 200],
+  countdown: [50]
+};
+
+function vibratePhase(phase) {
+  if (!('vibrate' in navigator) || audioMuted || !appData.settings.vibration) return;
+  const pattern = HAPTIC_PATTERNS[phase] || [50];
+  navigator.vibrate(pattern);
+}
+
+/* Escalating haptic for long holds — vibrates harder as time progresses */
+function vibrateEscalating(pctDone) {
+  if (!('vibrate' in navigator) || audioMuted || !appData.settings.vibration) return;
+  const intensity = Math.round(20 + pctDone * 80);
+  navigator.vibrate(intensity);
 }
 
 /* ═══ Phase Classifier ═══ */
@@ -2280,7 +2345,7 @@ function tick(id) {
       clearInterval(st.interval);
       document.getElementById('btn-' + id).innerHTML = ico('play',14) + ' ' + T[curLang].btnRestart;
       document.getElementById('timer-' + id).classList.remove('active');
-      if ('vibrate' in navigator && !audioMuted && appData.settings.vibration) navigator.vibrate([200, 100, 200]);
+      vibratePhase('done');
       playPhaseSound('done');
       // Log session
       const prog = programmes[id];
@@ -2297,7 +2362,7 @@ function tick(id) {
     if (newPhase !== st.prevPhase) {
       triggerPhaseFlash(id);
       playPhaseSound(newPhase);
-      if ('vibrate' in navigator && !audioMuted && appData.settings.vibration) navigator.vibrate(50);
+      vibratePhase(newPhase);
       // Update coaching text on phase change + rotate rest tips
       if (st.seq[st.cur].isRest) {
         st._restTipIdx = (st._restTipIdx || 0) + 1;
@@ -2310,6 +2375,13 @@ function tick(id) {
       }
     }
     st.prevPhase = newPhase;
+  }
+  // Escalating haptic for long holds (every 3 seconds)
+  if (!st.done && st.cur < st.seq.length) {
+    const cs = st.seq[st.cur];
+    if (cs.labelKey === 'holdMax' && cs.dur >= 10 && st.sec % 3 === 0) {
+      vibrateEscalating((cs.dur - st.sec) / cs.dur);
+    }
   }
   updateUI(id);
 }
@@ -2575,6 +2647,8 @@ function renderSettings() {
   document.getElementById('setVibration').checked = appData.settings.vibration;
   document.getElementById('setCoaching').checked = appData.settings.coaching;
   document.getElementById('setVolume').value = Math.round(appData.settings.volume * 100);
+  document.getElementById('setStealth').checked = !!appData.settings.stealth;
+  applyStealth();
 }
 
 function toggleSetting(key) {
@@ -2729,6 +2803,92 @@ function skipAssessment() {
   appData.assessed = true;
   appData.recommendedTrack = 'strengthen';
   saveData(appData);
+}
+
+/* ═══ ACCELEROMETER BREATHING MONITOR ═══ */
+let accelActive = false;
+let accelSmooth = 0;
+let accelPrev = 0;
+let accelNoBreathCount = 0;
+
+function toggleAccel(on) {
+  accelActive = on;
+  const wrap = document.getElementById('accelWrap');
+  if (on) {
+    wrap.classList.add('active');
+    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+      DeviceMotionEvent.requestPermission().then(state => {
+        if (state === 'granted') startAccel();
+        else { accelActive = false; document.getElementById('accelCheck').checked = false; wrap.classList.remove('active'); }
+      }).catch(() => { accelActive = false; document.getElementById('accelCheck').checked = false; wrap.classList.remove('active'); });
+    } else {
+      startAccel();
+    }
+  } else {
+    wrap.classList.remove('active');
+    stopAccel();
+  }
+}
+
+function startAccel() {
+  window.addEventListener('devicemotion', onDeviceMotion);
+}
+
+function stopAccel() {
+  window.removeEventListener('devicemotion', onDeviceMotion);
+  accelNoBreathCount = 0;
+  const alert = document.getElementById('accelAlert');
+  if (alert) alert.classList.remove('show');
+}
+
+function onDeviceMotion(e) {
+  if (!accelActive) return;
+  const a = e.accelerationIncludingGravity;
+  if (!a) return;
+  const z = a.z || 0;
+  // Smooth the z-axis to detect belly rise/fall
+  accelSmooth = accelSmooth * 0.7 + z * 0.3;
+  const delta = Math.abs(accelSmooth - accelPrev);
+  accelPrev = accelSmooth;
+
+  // Map delta to bar (0-100%)
+  const pct = Math.min(100, Math.round(delta * 50));
+  const fill = document.getElementById('accelFill');
+  const alert = document.getElementById('accelAlert');
+  if (fill) {
+    fill.style.width = Math.max(5, pct) + '%';
+    fill.className = 'accel-bar-fill' + (pct > 15 ? ' good' : pct > 5 ? '' : ' warning');
+  }
+
+  // Detect breath holding (very low movement for too long)
+  if (delta < 0.05) {
+    accelNoBreathCount++;
+    if (accelNoBreathCount > 60 && alert) { // ~3 seconds at 20Hz
+      alert.classList.add('show');
+      if (appData.settings.vibration) navigator.vibrate([30, 30, 30]);
+    }
+  } else {
+    accelNoBreathCount = 0;
+    if (alert) alert.classList.remove('show');
+  }
+}
+
+/* ═══ STEALTH MODE ═══ */
+function toggleStealth(on) {
+  appData.settings.stealth = on;
+  saveData(appData);
+  applyStealth();
+}
+
+function applyStealth() {
+  const isOn = appData.settings.stealth;
+  document.body.classList.toggle('stealth-mode', isOn);
+  // In stealth: disable audio, enable vibration only
+  if (isOn) {
+    document.title = 'Timer';
+  } else {
+    document.title = 'KEGOD \u2014 Become a machine';
+  }
 }
 
 /* ═══ SESSION SUMMARY ═══ */
